@@ -1,0 +1,52 @@
+{
+    "tips": [
+      {
+        "text": "Press ☰ at any time to return to the main screen.",
+        "category": "Main Screen"
+      },
+      {
+        "text": "Be in a room with good lighting for the best experience.",
+        "category": "Main Screen"
+      },
+      {
+        "text": "Keep your Arduino board and components on a flat, stable surface.",
+        "category": "Main Screen"
+      },
+      {
+        "text": "Move closer to your components if not detecting.",
+        "category": "Main Screen"
+      },
+
+      {
+        "text": "Move away components if already detected.",
+        "category": "Main Screen"
+      },
+      
+      {
+        "text": "Say 'Next step' or 'Previous step' to navigate hands-free.",
+        "category": "Instructions"
+      },
+     
+      {
+        "text": "Always disconnect power before making circuit changes.",
+        "category": "Safety"
+      },
+      {
+        "text": "Follow proper ESD (Electrostatic Discharge) precautions when handling components.",
+        "category": "Safety"
+      },
+      {
+        "text": "Check polarity of components before powering your circuit.",
+        "category": "Safety"
+      },
+      {
+        "text": "Keep liquids away from your Arduino and electronic components.",
+        "category": "Safety"
+      },
+      
+      {
+        "text": "Customize your settings according to your preferences.",
+        "category": "Settings"
+      }
+    ]
+  }

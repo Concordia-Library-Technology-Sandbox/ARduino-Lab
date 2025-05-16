@@ -1,0 +1,487 @@
+{
+    "projects": [
+        {
+            "name": "Blinking an LED",
+            "description": "LEDs (light-emitting diodes) are small, powerful lights that are used in many different applications. To start off the SIK, we will work on blinking an LED. That's right - it's as simple as turning a light on and off. It might not seem like much, but establishing this important baseline will give you a solid foundation as we work toward more complex experiments.",
+            "components": [
+                {
+                    "item": "led",
+                    "quantity": 1
+                },
+                {
+                    "item": "wire",
+                    "quantity": 3
+                },
+                {
+                    "item": "resistance",
+                    "value": "330",
+                    "quantity": 1
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "Potentiometer",
+            "description": "In this circuit you'll work with a potentiometer. A potentiometer is also known as a variable resistor. When it's connected with 5 volts across its two outer pins, the middle pin outputs a voltage between 0 and 5, depending on the position of the knob on the potentiometer. A potentiometer is a perfect demonstration of a variable voltage divider circuit. The voltage is divided proportionate to the resistance between the middle pin and the ground pin. In this circuit, you'll learn how to use a potentiometer to control the brightness of an LED.",
+            "components": [
+                {
+                    "item": "wire",
+                    "quantity": 6
+                },
+                {
+                    "item": "led",
+                    "quantity": 1
+                },
+                {
+                    "item": "resistance",
+                    "value": "330",
+                    "quantity": 1
+                },
+                {
+                    "item": "potentiometer",
+                    "quantity": 1
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "RGB LED",
+            "description": "You know what's even more fun than a blinking LED? Changing colors with one LED. RGB, or red-green-blue, LEDs have three different color-emitting diodes that can be combined to create all sorts of colors. In this circuit, you'll learn how to use an RGB LED to create unique color combinations. Depending on how bright each diode is, nearly any color is possible!",
+            "components": [
+                {
+                    "item": "wire",
+                    "quantity": 6
+                },
+                {
+                    "item": "resistance",
+                    "value": "330",
+                    "quantity": 3
+                },
+                {
+                    "item": "led",
+                    "quantity": 1
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "Multiple LEDs",
+            "description": "So you have gotten one LED to blink on and off – fantastic! Now it's time to up the stakes a little bit – by connecting EIGHT LEDS AT ONCE. We'll also give our RedBoard a little test by creating various lighting sequences. This circuit is a great setup to start practicing writing your own programs and getting a feel for the way RedBoard works.",
+            "components": [
+                {
+                    "item": "led",
+                    "quantity": 8
+                },
+                {
+                    "item": "wire",
+                    "quantity": 10
+                },
+                {
+                    "item": "resistance",
+                    "value": "330",
+                    "quantity": 8
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "Push Buttons",
+            "description": "Up until now, we've focused solely on outputs. Now we're going to go to the other end of spectrum and play around with inputs. In this circuit, we'll be looking at one of the most common and simple inputs – a push button. The way a push button works with RedBoard is that when the button is pushed, the voltage goes LOW. The RedBoard reads this and reacts accordingly. In this circuit, you will also use a pull-up resistor, which keeps the voltage HIGH when you're not pressing the button.",
+            "components": [
+                {
+                    "item": "wire",
+                    "quantity": 7
+                },
+                {
+                    "item": "push_button",
+                    "quantity": 2
+                },
+                {
+                    "item": "led",
+                    "quantity": 1
+                },
+                {
+                    "item": "resistance",
+                    "value": "330",
+                    "quantity": 1
+                },
+                {
+                    "item": "resistance",
+                    "value": "10",
+                    "quantity": 2
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "Photo Resistor",
+            "description": "So you've already played with a potentiometer, which varies resistance based on the twisting of a knob. In this circuit, you'll be using a photo resistor, which changes resistance based on how much light the sensor receives. Since the RedBoard can't directly interpret resistance (rather, it reads voltage), we use a voltage divider to use our photo resistor. This voltage divider will output a high voltage when it is getting a lot of light and a low voltage when it is not.",
+            "components": [
+                {
+                    "item": "wire",
+                    "quantity": 6
+                },
+                {
+                    "item": "led",
+                    "quantity": 1
+                },
+                {
+                    "item": "resistance",
+                    "value": "330",
+                    "quantity": 1
+                },
+                {
+                    "item": "photo_resistor",
+                    "quantity": 1
+                },
+                {
+                    "item": "resistance",
+                    "value": "10",
+                    "quantity": 1
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "Temperature Sensor",
+            "description": "A temperature sensor is exactly what it sounds like – a sensor used to measure ambient temperature. This particular sensor has three pins – a positive, a ground, and a signal. This is a linear temperature sensor. A change in temperature of one degree centigrade is equal to a change of 10 millivolts at the sensor output. The TMP36 sensor has a nominal 750 mV at 25°C (about room temperature). In this circuit, you'll learn how to integrate the temperature sensor with your RedBoard, and use the Arduino IDE's serial monitor to display the temperature.",
+            "components": [
+                {
+                    "item": "wire",
+                    "quantity": 5
+                },
+                {
+                    "item": "temp_sensor",
+                    "quantity": 1
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "Servo",
+            "description": "Servos are ideal for embedded electronics applications because they do one thing very well that motors cannot – they can move to a position accurately. By varying the pulse width of the output voltage to a servo, you can move a servo to a specific position. For example, a pulse of 1.5 milliseconds will move the servo 90 degrees. In this circuit, you'll learn how to use PWM (pulse width modulation) to control and rotate a servo.",
+            "components": [
+                {
+                    "item": "wire",
+                    "quantity": 8
+                },
+                {
+                    "item": "servo_motor",
+                    "quantity": 1
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "Flex Sensor",
+            "description": "In this circuit, we will use a flex sensor to measure, well, flex! A flex sensor uses carbon on a strip of plastic to act like a variable resistor, but instead of changing the resistance by turning a knob, you change it by flexing (bending) the component. We use a \"voltage divider\" again to detect this change in resistance. The sensor bends in one direction and the more it bends, the higher the resistance gets; it has a range from about 10K ohm to 35K ohm. In this circuit we will use the amount of bend of the flex sensor to control the position of a servo.",
+            "components": [
+                {
+                    "item": "wire",
+                    "quantity": 11
+                },
+                {
+                    "item": "servo_motor",
+                    "quantity": 1
+                },
+                {
+                    "item": "flex_sensor",
+                    "quantity": 1
+                },
+                {
+                    "item": "resistance",
+                    "value": "10",
+                    "quantity": 1
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "Soft Potentiometer",
+            "description": "In this circuit, we are going to use yet another kind of variable resistor – this time, a soft potentiometer (or soft pot). This is a thin and flexible strip that can detect where pressure is being applied. By pressing down on various parts of the strip, you can vary the resistance from 100 to 10K ohms. You can use this ability to track movement on the soft pot, or simply as a button. In this circuit, we'll get the soft pot up and running to control an RGB LED.",
+            "components": [
+                {
+                    "item": "wire",
+                    "quantity": 9
+                },
+                {
+                    "item": "resistance",
+                    "value": "330",
+                    "quantity": 3
+                },
+                {
+                    "item": "led",
+                    "quantity": 1
+                },
+                {
+                    "item": "soft_potentiometer",
+                    "quantity": 1
+                },
+                {
+                    "item": "resistance",
+                    "value": "10",
+                    "quantity": 1
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "Piezo Buzzer",
+            "description": "In this circuit, we'll again bridge the gap between the digital world and the analog world. We'll be using a buzzer that makes a small \"click\" when you apply voltage to it (try it!). By itself that isn't terribly exciting, but if you turn the voltage on and off hundreds of times a second, the buzzer will produce a tone. And if you string a bunch of tones together, you've got music! This circuit and sketch will play a classic tune. We'll never let you down!",
+            "components": [
+                {
+                    "item": "wire",
+                    "quantity": 3
+                },
+                {
+                    "item": "piezo_buzzer",
+                    "quantity": 1
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "Spinning a Motor",
+            "description": "Remember before when you played around with a servo motor? Now we are going to tackle spinning a motor. This requires the use of a transistor, which can switch a larger amount of current than the RedBoard can. When using a transistor, you just need to make sure its maximum specs are high enough for your use. The transistor we are using for this circuit is rated at 50V and 800 milliamps max – perfect for our toy motor! When the motor is spinning and suddenly turned off, the magnetic field inside it collapses, generating a voltage spike. This can damage the transistor. To prevent this, we use a \"flyback diode\", which diverts the voltage spike around the transistor.",
+            "components": [
+                {
+                    "item": "wire",
+                    "quantity": 6
+                },
+                {
+                    "item": "DC_Motor",
+                    "quantity": 1
+                },
+                {
+                    "item": "Diode (1N4148)",
+                    "quantity": 1
+                },
+                {
+                    "item": "transistor",
+                    "quantity": 1
+                },
+                {
+                    "item": "resistance",
+                    "value": "330",
+                    "quantity": 1
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "Relay",
+            "description": "In this circuit, we are going to use some of the lessons we learned in circuit 12 to control a relay. A relay is basically an electrically controlled mechanical switch. Inside that harmless looking plastic box is an electromagnet that, when it gets a jolt of energy, causes a switch to trip. In this circuit, you'll learn how to control a relay like a pro – giving your RedBoard even more powerful abilities!",
+            "components": [
+                {
+                    "item": "wire",
+                    "quantity": 14
+                },
+                {
+                    "item": "transistor",
+                    "quantity": 1
+                },
+                {
+                    "item": "relay",
+                    "quantity": 1
+                },
+                {
+                    "item": "Diode (1N4148)",
+                    "quantity": 1
+                },
+                {
+                    "item": "resistance",
+                    "value": "330",
+                    "quantity": 2
+                },
+                {
+                    "item": "led",
+                    "quantity": 2
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "Shift Register",
+            "description": "Now we are going to step into the world of ICs (integrated circuits). In this circuit, you'll learn all about using a shift register (also called a serial-to-parallel converter). The shift register will give your RedBoard an additional eight outputs, using only three pins on your board. For this circuit, you'll practice by using the shift register to control eight LEDs.",
+            "components": [
+                {
+                    "item": "wire",
+                    "quantity": 19
+                },
+                {
+                    "item": "integrated_circuit",
+                    "quantity": 1
+                },
+                {
+                    "item": "resistance",
+                    "value": "330",
+                    "quantity": 8
+                },
+                {
+                    "item": "led",
+                    "quantity": 8
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "LCD",
+            "description": "In this circuit, you'll learn about how to use an LCD. An LCD, or liquid crystal display, is a simple screen that can display commands, bits of information, or readings from your sensor - all depending on how you program your board. In this circuit, you'll learn the basics of incorporating an LCD into your project.",
+            "components": [
+                {
+                    "item": "wire",
+                    "quantity": 16
+                },
+                {
+                    "item": "lcd_screen",
+                    "quantity": 1
+                },
+                {
+                    "item": "potentiometer",
+                    "quantity": 1
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        },
+        {
+            "name": "Simon Says",
+            "description": "Now that we've learned all the basics behind the components in the SIK, let's put them together and have some fun. This circuit will show you how to create your own Simon Says game. Using some LEDs, some buttons, a buzzer and some resistors, you can create this and other exciting games with your SIK.",
+            "components": [
+                {
+                    "item": "piezo_buzzer",
+                    "quantity": 1
+                },
+                {
+                    "item": "led",
+                    "quantity": 4
+                },
+                {
+                    "item": "resistance",
+                    "value": "330",
+                    "quantity": 4
+                },
+                {
+                    "item": "push_button",
+                    "quantity": 4
+                },
+                {
+                    "item": "wire",
+                    "quantity": 16
+                },
+                {
+                    "item": "breadboard",
+                    "quantity": 1
+                },
+                {
+                    "item": "arduino",
+                    "quantity": 1
+                }
+            ]
+        }
+    ]
+}
