@@ -15,8 +15,8 @@ EditorBuildSettings:
     path: Assets/Scenes/SelectProject/SelectProject.unity
     guid: 557fb71a8a2e166dcbb31f4b2daec9b7
   - enabled: 1
-    path: Assets/Scenes/SettingsScene/SettingsScene.unity
-    guid: 220777741c99d62ea8d3752a336d032a
+    path: Assets/Scenes/AboutScene/AboutScene.unity
+    guid: db857c79f62c0fb7e96a795328f74b47
   - enabled: 1
     path: Assets/Scenes/MultiObjectDetection/StaticMultiObjectDetection.unity
     guid: 974fd23bb2953f9a6a0ad8f7b5e9d7fd

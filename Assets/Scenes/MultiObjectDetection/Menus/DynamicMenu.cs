@@ -38,9 +38,11 @@ namespace PassthroughCameraSamples.SelectProject
                 DynamicProjectStaticClass.OnComponentsChanged += HandleComponentsChanged;
 
 
+
                 // Initial UI render
                 HandleComponentsChanged(DynamicProjectStaticClass.components);
 
+                
 
             }
 
@@ -60,6 +62,9 @@ namespace PassthroughCameraSamples.SelectProject
         {
             Debug.Log("ObjectsFound changed!");
             uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_LEFT);
+
+            _ = uiBuilder.AddButton("btn", () => {}, -1, DebugUIBuilder.DEBUG_PANE_LEFT);
+
             
             _ = uiBuilder.AddLabel($"Components List", DebugUIBuilder.DEBUG_PANE_LEFT, 40);
 

@@ -477,7 +477,7 @@ namespace PassthroughCameraSamples.StartScene
             return rt;
         }
 
-        public RectTransform AddComponentImage(Sprite sprite, int targetCanvas = 0, Action onClick = null)
+        public RectTransform AddAboutImage(Sprite sprite, int targetCanvas = 0, Action onClick = null)
         {
             var imageObject = new GameObject("DebugUIImage", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
             var image = imageObject.GetComponent<Image>();
@@ -493,6 +493,31 @@ namespace PassthroughCameraSamples.StartScene
             }
 
             var rt = imageObject.GetComponent<RectTransform>();
+        
+
+            AddRect(rt, targetCanvas);
+
+            return rt;
+        }
+        
+     
+        public RectTransform AddComponentImage(Sprite sprite, int targetCanvas = 0, Action onClick = null)
+        {
+            var imageObject = new GameObject("DebugUIImage", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
+            var image = imageObject.GetComponent<Image>();
+            image.sprite = sprite;
+            image.preserveAspect = true;
+
+            var button = imageObject.GetComponent<Button>();
+            if (onClick != null)
+            {
+                button.onClick.AddListener(() =>
+                {
+                    onClick();
+                });
+            }
+
+            var rt = imageObject.GetComponent<RectTransform>();
             rt.anchorMin = new Vector2(0.5f, 1); // Align to top-center
             rt.anchorMax = new Vector2(0.5f, 1);
             rt.pivot = new Vector2(0.5f, 1); // Set pivot to top-center
@@ -501,6 +526,7 @@ namespace PassthroughCameraSamples.StartScene
 
             return rt;
         }
+        
         public Sprite LoadSpriteFromResources(string imageName)
         {
             // Remove file extensions if present
@@ -511,15 +537,16 @@ namespace PassthroughCameraSamples.StartScene
             }
             
             // Try to load from Resources folder
-            Texture2D texture = Resources.Load<Texture2D>("2dmod/" + resourcePath);
+            Texture2D texture = Resources.Load<Texture2D>(resourcePath);
             if (texture != null)
             {
                 return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
             }
             
-            Debug.LogError($"Could not load image from Resources: 2dmod/{resourcePath}");
+            Debug.LogError($"Could not load image from Resources: {resourcePath}");
             return null;
         }
+        
 
         public GameObject Add3DCube(Vector3 position, Vector3 scale, Color color, int targetCanvas = 0)
         {

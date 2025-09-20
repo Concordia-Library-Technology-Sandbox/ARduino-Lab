@@ -12,7 +12,7 @@ namespace PassthroughCameraSamples.StartScene
     // Create menu of all scenes included in the build.
     public class StartMenu : MonoBehaviour
     {
-        
+
         private void Start()
         {
             var generalScenes = new List<Tuple<int, string>>();
@@ -24,7 +24,7 @@ namespace PassthroughCameraSamples.StartScene
             {
                 var path = UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex(sceneIndex);
 
-                
+
                 passthroughScenes.Add(new Tuple<int, string>(sceneIndex, path));
             }
 
@@ -36,27 +36,28 @@ namespace PassthroughCameraSamples.StartScene
 
                 _ = uiBuilder.AddLabel("ARduino Lab", DebugUIBuilder.DEBUG_PANE_CENTER, 60);
 
-                _ = uiBuilder.AddLabel("Hands-On Arduino tutorials, enhanced with augmented reality & computer vision.", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
+                _ = uiBuilder.AddLabel("Exploring Arduino with Computer Vision & Augmented Reality.", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
 
                 //Buttons
-                _ = uiBuilder.AddButton("Suggest project", () => LoadScene(1), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
-                _ = uiBuilder.AddButton("Select project", () => LoadScene(2), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
-                _ = uiBuilder.AddButton("Settings", () => LoadScene(3), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+                _ = uiBuilder.AddButton("Detect Components", () => LoadScene(1), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+                _ = uiBuilder.AddButton("Suggested Projects", () => LoadScene(2), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+                _ = uiBuilder.AddButton("About", () => LoadScene(3), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
 
-                _ = uiBuilder.AddLabel("Developed by Gabriel Armas Aranibar\nConcordia University – Technology Sandbox\n Version 1.0", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
-                
+                _ = uiBuilder.AddLabel("By Gabriel Armas\nConcordia University\nv1.1", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
+
             }
 
-            
+
             //tips
-            
+
             TextAsset jsonFile = Resources.Load<TextAsset>("tips");
 
-            if (jsonFile != null){
+            if (jsonFile != null)
+            {
                 var tipsobj = JsonUtility.FromJson<TipList>(jsonFile.text);
                 System.Random random = new System.Random();
                 int index = random.Next(0, tipsobj.tips.Count);
-                _ = uiBuilder.AddLabel($"Tips: {tipsobj.tips[index].text}", DebugUIBuilder.DEBUG_PANE_RIGHT, 25);
+                _ = uiBuilder.AddLabel($"Tip: {tipsobj.tips[index].text}", DebugUIBuilder.DEBUG_PANE_RIGHT, 25);
             }
 
             uiBuilder.Show();
@@ -64,7 +65,7 @@ namespace PassthroughCameraSamples.StartScene
 
         private void LoadScene(int idx)
         {
-            if (idx == 1)
+            if (idx == 1 || idx == 3)
             {
                 StaticClass.projectid = -1;
                 DynamicProjectStaticClass.components = new List<string>();

@@ -70,7 +70,7 @@ namespace PassthroughCameraSamples.Select
                                 {
                                     _ = uiBuilder.AddParagraph($"{component.quantity} {component.item}{plural}", DebugUIBuilder.DEBUG_PANE_RIGHT, 20);
                                 }
-                                LoadComponentImage(component.item + ".jpg", DebugUIBuilder.DEBUG_PANE_RIGHT, () =>
+                                LoadComponentImage("2dmod/" +component.item + ".jpg", DebugUIBuilder.DEBUG_PANE_RIGHT, () =>
                                 {
 
                                     GameObject prefab = Resources.Load<GameObject>($"3DI/{component.item}");
