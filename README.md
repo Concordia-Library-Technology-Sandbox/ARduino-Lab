@@ -1,7 +1,14 @@
 # ARduino Lab
 
-[![Watch the video version 1.0](https://img.youtube.com/vi/LA2L-PZg3EM/0.jpg)](https://www.youtube.com/watch?v=LA2L-PZg3EM)
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=LA2L-PZg3EM" target="_blank">
+    <img src="https://img.youtube.com/vi/LA2L-PZg3EM/maxresdefault.jpg" alt="Watch the video version 1.0" width="70%">
+  </a>
+</p>
 
+<p align="center">
+  🎥 <b><a href="https://www.youtube.com/watch?v=LA2L-PZg3EM" target="_blank">Watch the Video Demo (Version 1.0)</a></b>
+</p>
 
 
 ## Overview
