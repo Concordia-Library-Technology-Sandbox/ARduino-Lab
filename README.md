@@ -1,5 +1,9 @@
 # ARduino Lab
 
+[![Watch the video version 1.0](https://img.youtube.com/vi/LA2L-PZg3EM/0.jpg)](https://www.youtube.com/watch?v=LA2L-PZg3EM)
+
+
+
 ## Overview
 This project is an **Augmented Reality (AR) application** developed for the **Meta Quest 3**, designed to help students learn **Arduino** in an interactive and immersive way. Created for the **Concordia Sandbox**, the app uses **computer vision** to recognize physical components and overlay digital guides to assist with learning.
 
