@@ -467,7 +467,7 @@ namespace PassthroughCameraSamples.StartScene
             return textRT;
         }
 
-        public RectTransform AddConcordiaLogo(int targetCanvas = 0)
+        public RectTransform AddAppLogo(int targetCanvas = 0)
         {
             var rt = Instantiate(m_ConcordiaPrefab).GetComponent<RectTransform>();
             rt.anchorMin = new Vector2(0.5f, 1); // Align to top-center

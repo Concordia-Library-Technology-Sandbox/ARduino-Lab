@@ -32,18 +32,16 @@ namespace PassthroughCameraSamples.StartScene
             if (passthroughScenes.Count > 0)
             {
 
-                _ = uiBuilder.AddConcordiaLogo(DebugUIBuilder.DEBUG_PANE_CENTER);
+                _ = uiBuilder.AddAppLogo(DebugUIBuilder.DEBUG_PANE_CENTER);
 
-                _ = uiBuilder.AddLabel("ARduino Lab", DebugUIBuilder.DEBUG_PANE_CENTER, 60);
-
-                _ = uiBuilder.AddLabel("Exploring Arduino with Computer Vision & Augmented Reality.", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
+                _ = uiBuilder.AddLabel("Exploring Arduino with Computer Vision, LLMs and Augmented Reality.", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
 
                 //Buttons
-                _ = uiBuilder.AddButton("Detect Components", () => LoadScene(1), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
-                _ = uiBuilder.AddButton("Suggested Projects", () => LoadScene(2), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+                _ = uiBuilder.AddButton("Start", () => LoadScene(1), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+                _ = uiBuilder.AddButton("Settings", () => LoadScene(2), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
                 _ = uiBuilder.AddButton("About", () => LoadScene(3), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
-
-                _ = uiBuilder.AddLabel("By Gabriel Armas\nConcordia University\nv1.1", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
+                
+                _ = uiBuilder.AddLabel("ARduino Lab Beta\nBy Gabriel Armas", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
 
             }
 
@@ -57,11 +55,13 @@ namespace PassthroughCameraSamples.StartScene
                 var tipsobj = JsonUtility.FromJson<TipList>(jsonFile.text);
                 System.Random random = new System.Random();
                 int index = random.Next(0, tipsobj.tips.Count);
-                _ = uiBuilder.AddLabel($"Tip: {tipsobj.tips[index].text}", DebugUIBuilder.DEBUG_PANE_RIGHT, 25);
+                _ = uiBuilder.AddLabel($"Friendly Tip: {tipsobj.tips[index].text}", DebugUIBuilder.DEBUG_PANE_RIGHT, 25);
             }
 
             uiBuilder.Show();
         }
+
+     
 
         private void LoadScene(int idx)
         {
