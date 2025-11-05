@@ -5,14 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Meta.XR.Samples;
-using PassthroughCameraSamples.StartScene; // Add this namespace for DebugUIBuilder
+using PassthroughCameraSamples.StartScene; 
 using UnityEngine;
 
 namespace PassthroughCameraSamples.SelectProject
 
 {
     // Create menu of all scenes included in the build.
-    public class SettingsMenu : MonoBehaviour
+    public class StartOptions : MonoBehaviour
     {
 
 
@@ -36,10 +36,7 @@ namespace PassthroughCameraSamples.SelectProject
             if (passthroughScenes.Count > 0)
             {
 
-
-                _ = uiBuilder.AddLabel("Settings", DebugUIBuilder.DEBUG_PANE_CENTER, 60);
-
-
+                _ = uiBuilder.AddLabel("Start Options", DebugUIBuilder.DEBUG_PANE_LEFT, 40);
 
 
                 uiBuilder.Show();
@@ -57,8 +54,11 @@ namespace PassthroughCameraSamples.SelectProject
             Debug.Log("Load scene: " + idx);
             UnityEngine.SceneManagement.SceneManager.LoadScene(idx);
         }
-   
+
+           
+
     }
+    
 }
 
 
