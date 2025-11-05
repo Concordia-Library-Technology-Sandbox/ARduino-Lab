@@ -38,6 +38,9 @@ namespace PassthroughCameraSamples.StartScene
 
                 //Buttons
                 _ = uiBuilder.AddButton("Start", () => LoadScene(1), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+                _ = uiBuilder.AddButton("Video Tutorial", () => {
+                        Application.OpenURL("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+                }, -1, DebugUIBuilder.DEBUG_PANE_CENTER);
                 _ = uiBuilder.AddButton("Settings", () => LoadScene(2), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
                 _ = uiBuilder.AddButton("About", () => LoadScene(3), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
                 

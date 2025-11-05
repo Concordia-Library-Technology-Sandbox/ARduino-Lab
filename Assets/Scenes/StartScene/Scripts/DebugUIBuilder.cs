@@ -467,6 +467,7 @@ namespace PassthroughCameraSamples.StartScene
             return textRT;
         }
 
+
         public RectTransform AddAppLogo(int targetCanvas = 0)
         {
             var rt = Instantiate(m_ConcordiaPrefab).GetComponent<RectTransform>();
@@ -477,29 +478,50 @@ namespace PassthroughCameraSamples.StartScene
             return rt;
         }
 
-        public RectTransform AddAboutImage(Sprite sprite, int targetCanvas = 0, Action onClick = null)
+
+        public void LoadImage(string imageName, int targetPane,  int maxDisplayWidth = 450)
         {
-            var imageObject = new GameObject("DebugUIImage", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
+            // Load from Resources folder
+            Sprite sprite = DebugUIBuilder.Instance.LoadSpriteFromResources(imageName);
+            if (sprite != null)
+            {
+                AddImage(sprite, targetPane, maxDisplayWidth);
+            }
+            else
+            {
+                Debug.LogError($"Failed to load image: {imageName}");
+                // Add a placeholder or error message
+                _ = AddLabel("[Image Not Found]", targetPane);
+            }
+
+        }
+                
+
+        public RectTransform AddImage(Sprite sprite, int targetCanvas = 0, int maxDisplayWidth = 450)
+        {
+            var imageObject = new GameObject("DebugUIImage", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
             var image = imageObject.GetComponent<Image>();
             image.sprite = sprite;
             image.preserveAspect = true;
 
-            var button = imageObject.GetComponent<Button>();
-            if (onClick != null)
-            {
-            button.onClick.AddListener(()=> {
-                onClick();
-            });
-            }
-
             var rt = imageObject.GetComponent<RectTransform>();
-        
+            rt.anchorMin = new Vector2(0.5f, 1); // Align to top-center
+            rt.anchorMax = new Vector2(0.5f, 1);
+            rt.pivot = new Vector2(0.5f, 1); // Set pivot to top-center
+
+            // Compute a smaller display size while preserving aspect ratio.
+            var nativeW = sprite.rect.width;
+            var nativeH = sprite.rect.height;
+            float displayWidth = Mathf.Min(nativeW, maxDisplayWidth);
+            float displayHeight = nativeH * (displayWidth / nativeW);
+
+            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, displayWidth);
+            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, displayHeight);
 
             AddRect(rt, targetCanvas);
 
             return rt;
         }
-        
      
         public RectTransform AddComponentImage(Sprite sprite, int targetCanvas = 0, Action onClick = null)
         {

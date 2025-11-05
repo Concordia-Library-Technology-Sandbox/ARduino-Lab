@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Meta.XR.Samples;
-using PassthroughCameraSamples.StartScene; // Add this namespace for DebugUIBuilder
+using PassthroughCameraSamples.StartScene; 
 using UnityEngine;
 
 namespace PassthroughCameraSamples.SelectProject
@@ -35,19 +35,29 @@ namespace PassthroughCameraSamples.SelectProject
             var uiBuilder = DebugUIBuilder.Instance;
             if (passthroughScenes.Count > 0)
             {
-                LoadAboutImage("abouts/about_img_1.jpg", DebugUIBuilder.DEBUG_PANE_RIGHT,  null);
 
-                _ = uiBuilder.AddLabel("About ARduino Lab", DebugUIBuilder.DEBUG_PANE_CENTER, 40);
+                _ = uiBuilder.AddLabel("About ARduino Lab", DebugUIBuilder.DEBUG_PANE_LEFT, 40);
 
-                _ = uiBuilder.AddParagraph("ARduino Lab is a personal project and proof of concept built to explore the Meta Passthrough API, which enables developers to access the Meta Quest cameras. The goal of the project is to make it easier for beginners to learn about Arduino components and simple electronics projects through an engaging, hands-on experience. Arduino Lab received funding through the EL Grant and has been supported and developed at the Concordia University Technology Sandbox.", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
+                _ = uiBuilder.AddAppLogo(DebugUIBuilder.DEBUG_PANE_LEFT);
 
-                _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_CENTER);
+                _ = uiBuilder.AddParagraph("ARduino Lab is a personal project and proof of concept built to explore the Meta Passthrough API, which enables developers to access the Meta Quest cameras. The goal of the project is to make it easier for beginners to learn about Arduino components and simple electronics projects through an engaging, hands-on experience. Arduino Lab received funding through the EL Grant and has been supported and developed at the Concordia University Technology Sandbox.", DebugUIBuilder.DEBUG_PANE_LEFT, 17);
 
-                _ = uiBuilder.AddLabel("About Gabriel", DebugUIBuilder.DEBUG_PANE_CENTER, 40);
+                _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
 
-                _ = uiBuilder.AddParagraph("Hello! My name is Gabriel, and I am a final-year CS undergraduate student at Concordia University in Montreal, Canada. My interests are in computer vision, augmented reality, and robotics, where I have gained hands-on experience through internships and research projects. I am passionate about developing innovative solutions, and aspire to pursue academic research in the future.", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
+                _ = uiBuilder.AddLabel("About The Developer", DebugUIBuilder.DEBUG_PANE_LEFT, 40);
 
-                _ = uiBuilder.AddParagraph("github.com/gabxap\nlinkedin.com/in/gabriel-armas", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
+                uiBuilder.LoadImage("abouts/gabriel_armas.png", DebugUIBuilder.DEBUG_PANE_LEFT, 200);
+
+                _ = uiBuilder.AddParagraph("Hello! My name is Gabriel, and I am a final-year CS undergraduate student at Concordia University in Montreal, Canada. My interests are in computer vision, augmented reality, and robotics, where I have gained hands-on experience through internships and research projects. I am passionate about developing innovative solutions, and aspire to pursue academic research in the future.", DebugUIBuilder.DEBUG_PANE_LEFT, 17);
+
+                _ = uiBuilder.AddParagraph("github.com/gabxap\nlinkedin.com/in/gabriel-armas", DebugUIBuilder.DEBUG_PANE_LEFT, 20);
+
+                // GALLERY 
+
+
+                uiBuilder.LoadImage("abouts/1.jpg", DebugUIBuilder.DEBUG_PANE_RIGHT,1000);
+                _ = uiBuilder.AddLabel("Concordia University Technology Sandbox.", DebugUIBuilder.DEBUG_PANE_RIGHT, 20);
+
 
                 uiBuilder.Show();
             }
@@ -65,21 +75,7 @@ namespace PassthroughCameraSamples.SelectProject
             UnityEngine.SceneManagement.SceneManager.LoadScene(idx);
         }
 
-           public void LoadAboutImage(string imageName, int targetPane, Action onClick)
-                {
-                    // Load from Resources folder
-                    Sprite sprite = DebugUIBuilder.Instance.LoadSpriteFromResources(imageName);
-                    if (sprite != null)
-                    {
-                        DebugUIBuilder.Instance.AddAboutImage(sprite, targetPane, onClick);
-                    }
-                    else
-                    {
-                        Debug.LogError($"Failed to load image: {imageName}");
-                        // Add a placeholder or error message
-                        _ = DebugUIBuilder.Instance.AddLabel("[Image Not Found]", targetPane);
-                    }
-                }
+           
 
     }
     
