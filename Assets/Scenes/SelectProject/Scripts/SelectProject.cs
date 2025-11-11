@@ -101,7 +101,7 @@ namespace PassthroughCameraSamples.Select
                                 componentsArray.Add((project.components[i].item, project.components[i].quantity, project.components[i].value));
                             }
 
-                            _ = uiBuilder.AddButton("Select", () => { LoadProjectScene(selectedIndex, componentsArray); }, -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+                           //_ = uiBuilder.AddButton("Select", () => { LoadProjectScene(selectedIndex, componentsArray); }, -1, DebugUIBuilder.DEBUG_PANE_CENTER);
                             uiBuilder.Show();
 
                         }, -1, DebugUIBuilder.DEBUG_PANE_LEFT);
