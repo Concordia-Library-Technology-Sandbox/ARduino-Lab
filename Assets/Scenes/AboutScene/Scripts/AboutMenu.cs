@@ -45,7 +45,7 @@ namespace PassthroughCameraSamples.SelectProject
 
                 _ = uiBuilder.AddAppLogo(DebugUIBuilder.DEBUG_PANE_LEFT);
 
-                _ = uiBuilder.AddParagraph("ARduino Lab is a personal project and proof of concept built to explore the Meta Passthrough API, which enables developers to access the Meta Quest cameras. The goal of the project is to make it easier for beginners to learn about Arduino components and simple electronics projects through an engaging, hands-on experience. Arduino Lab received funding through the EL Grant and has been supported and developed at the Concordia University Technology Sandbox.", DebugUIBuilder.DEBUG_PANE_LEFT, 17);
+                _ = uiBuilder.AddParagraph("ARduino Lab is a personal project and proof of concept built to explore the Meta Passthrough API, which enables developers to access the Meta Quest cameras. The goal of the project is to make it easier for beginners to learn about Arduino components and simple electronics projects through an engaging, hands-on experience. Arduino Lab received funding through the EL Grant and has been supported and developed at the Concordia University Library Technology Sandbox.", DebugUIBuilder.DEBUG_PANE_LEFT, 17);
 
                 _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
 
@@ -61,7 +61,7 @@ namespace PassthroughCameraSamples.SelectProject
 
 
                 uiBuilder.LoadImage("abouts/1.jpg", DebugUIBuilder.DEBUG_PANE_RIGHT,1000);
-                _ = uiBuilder.AddLabel("Concordia University Technology Sandbox.", DebugUIBuilder.DEBUG_PANE_RIGHT, 20);
+                _ = uiBuilder.AddLabel("Concordia University Library Technology Sandbox.", DebugUIBuilder.DEBUG_PANE_RIGHT, 20);
 
 
                 uiBuilder.Show();
