@@ -70,11 +70,7 @@ namespace PassthroughCameraSamples.SelectProject
 
         private void LoadScene(int idx)
         {
-            if (idx == 1)
-            {
-                StaticClass.projectid = -1;
-                DynamicProjectStaticClass.components = new List<string>();
-            }
+           
             DebugUIBuilder.Instance.Hide();
             Debug.Log("Load scene: " + idx);
             UnityEngine.SceneManagement.SceneManager.LoadScene(idx);

@@ -21,14 +21,11 @@ EditorBuildSettings:
     path: Assets/Scenes/ProjectAssistant/Instructions.unity
     guid: 8966aba8411366c66a43cbbb9a3a6511
   - enabled: 1
-    path: Assets/Scenes/MultiObjectDetection/InstructionsScene.unity
-    guid: f1e1129e7a32f6230a0785afbd56a7e0
+    path: Assets/Scenes/ProjectAssistant/ComponentsScreen.unity
+    guid: 9dca77f5203d3c2389baabd937afaebf
   - enabled: 1
-    path: Assets/Scenes/MultiObjectDetection/StaticMultiObjectDetection.unity
-    guid: 974fd23bb2953f9a6a0ad8f7b5e9d7fd
-  - enabled: 1
-    path: Assets/Scenes/MultiObjectDetection/DynamicMultiObjectDetection.unity
-    guid: 81fc585e84f3e3be7bcff49ad690b187
+    path: Assets/Scenes/ProjectAssistant/ManualComponentSelection.unity
+    guid: 3205d124f49c0d7e8aa126c4ccb2bd79
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: f2bf97b3acdb64248a707c407c9fc54e, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: a971eac5e950046e586c5e153e32d05c, type: 2}

@@ -52,7 +52,7 @@ namespace PassthroughCameraSamples.SelectProject
                 DebugUIBuilder.DEBUG_PANE_CENTER, 30);
 
 
-                _ = uiBuilder.AddButton("Start", () => LoadScene(1), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+                _ = uiBuilder.AddButton("Start", () => LoadScene(5), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
                 
                 uiBuilder.Show();
             }
@@ -61,11 +61,6 @@ namespace PassthroughCameraSamples.SelectProject
 
         private void LoadScene(int idx)
         {
-            if (idx == 1)
-            {
-                StaticClass.projectid = -1;
-                DynamicProjectStaticClass.components = new List<string>();
-            }
             DebugUIBuilder.Instance.Hide();
             Debug.Log("Load scene: " + idx);
             UnityEngine.SceneManagement.SceneManager.LoadScene(idx);

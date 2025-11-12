@@ -30,6 +30,7 @@ namespace PassthroughCameraSamples.SelectProject
             var uiBuilder = DebugUIBuilder.Instance;
             if (passthroughScenes.Count > 0)
             {
+
                 uiBuilder.LoadComponentImage(uiBuilder, "icons/back-btn.png", DebugUIBuilder.DEBUG_PANE_CENTER, () =>
                                 {
                                     LoadScene(0);
@@ -72,11 +73,7 @@ namespace PassthroughCameraSamples.SelectProject
 
         private void LoadScene(int idx)
         {
-            if (idx == 1)
-            {
-                StaticClass.projectid = -1;
-                DynamicProjectStaticClass.components = new List<string>();
-            }
+           
             DebugUIBuilder.Instance.Hide();
             Debug.Log("Load scene: " + idx);
             UnityEngine.SceneManagement.SceneManager.LoadScene(idx);

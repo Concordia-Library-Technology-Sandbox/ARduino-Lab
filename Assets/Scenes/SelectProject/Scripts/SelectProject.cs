@@ -129,8 +129,6 @@ namespace PassthroughCameraSamples.Select
         {
             if (idx == 1)
             {
-                StaticClass.projectid = -1;
-                DynamicProjectStaticClass.components = new List<string>();
             }
             DebugUIBuilder.Instance.Hide();
             Debug.Log("Load scene: " + idx);

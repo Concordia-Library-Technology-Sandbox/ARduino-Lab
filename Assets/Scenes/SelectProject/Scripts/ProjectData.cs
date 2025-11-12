@@ -17,6 +17,13 @@ namespace PassthroughCameraSamples.StartScene
         public List<Component> components;
     }
 
+    
+    [Serializable]
+    public class ComponentList
+    {
+        public List<Component> components;
+    }
+
     [Serializable]
     public class Component
     {
