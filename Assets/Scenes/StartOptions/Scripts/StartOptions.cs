@@ -37,7 +37,7 @@ namespace PassthroughCameraSamples.SelectProject
                 _ = uiBuilder.AddLabel("Start", DebugUIBuilder.DEBUG_PANE_CENTER, 50);
 
                 //Buttons
-                _ = uiBuilder.AddButton("Scan Components", () => loadDescription(uiBuilder, 1), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+                _ = uiBuilder.AddButton("Project Assistant", () => loadDescription(uiBuilder, 1), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
                 _ = uiBuilder.AddButton("Project Ideas", () => loadDescription(uiBuilder, 2), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
 
                 uiBuilder.Show();
@@ -51,9 +51,9 @@ namespace PassthroughCameraSamples.SelectProject
             int sceneNumber = -1;
             if (option == 1)
             {
-                title = "Scan Components";
+                title = "Project Assistant";
                 description = "Enter this mode to scan and recognize your Arduino components directly using your Meta Quest 3 cameras. The system identifies the parts you wish to use, suggests possible projects, and provides step-by-step AR overlays to guide you through each process. We recommend using the SparkFun RedBoard kit for the best experience.";
-                sceneNumber = 1;
+                sceneNumber = 4;
             }
             else
             {

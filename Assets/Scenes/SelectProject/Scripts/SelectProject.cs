@@ -60,7 +60,6 @@ namespace PassthroughCameraSamples.Select
                             _ = uiBuilder.AddLabel($"{selectedIndex + 1}. {project.name}", DebugUIBuilder.DEBUG_PANE_CENTER, 40);
                             uiBuilder.LoadImage($"projects-imgs/{selectedIndex + 1}.png", DebugUIBuilder.DEBUG_PANE_CENTER, 200);
                             _ = uiBuilder.AddParagraph($"{project.description}", DebugUIBuilder.DEBUG_PANE_CENTER, 25);
-                            _ = uiBuilder.AddLabel("*Reference image only.", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
                             
                             _ = uiBuilder.AddLabel($"Components", DebugUIBuilder.DEBUG_PANE_RIGHT, 40);
                             _ = uiBuilder.AddLabel($"Press on a component image to view its 3D model", DebugUIBuilder.DEBUG_PANE_RIGHT, 25);
