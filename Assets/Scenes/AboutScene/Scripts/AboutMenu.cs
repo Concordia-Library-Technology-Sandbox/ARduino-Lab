@@ -36,6 +36,11 @@ namespace PassthroughCameraSamples.SelectProject
             if (passthroughScenes.Count > 0)
             {
 
+                    uiBuilder.LoadComponentImage(uiBuilder, "icons/back-btn.png", DebugUIBuilder.DEBUG_PANE_LEFT, () =>
+                    {
+                                    LoadScene(0);
+                                });
+
                 _ = uiBuilder.AddLabel("About ARduino Lab", DebugUIBuilder.DEBUG_PANE_LEFT, 40);
 
                 _ = uiBuilder.AddAppLogo(DebugUIBuilder.DEBUG_PANE_LEFT);

@@ -30,7 +30,11 @@ namespace PassthroughCameraSamples.SelectProject
             var uiBuilder = DebugUIBuilder.Instance;
             if (passthroughScenes.Count > 0)
             {
-                _ = uiBuilder.AddLabel("Start Options", DebugUIBuilder.DEBUG_PANE_CENTER, 40);
+                uiBuilder.LoadComponentImage(uiBuilder, "icons/back-btn.png", DebugUIBuilder.DEBUG_PANE_CENTER, () =>
+                                {
+                                    LoadScene(0);
+                                });
+                _ = uiBuilder.AddLabel("Start", DebugUIBuilder.DEBUG_PANE_CENTER, 50);
 
                 //Buttons
                 _ = uiBuilder.AddButton("Scan Components", () => loadDescription(uiBuilder, 1), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
@@ -48,13 +52,13 @@ namespace PassthroughCameraSamples.SelectProject
             if (option == 1)
             {
                 title = "Scan Components";
-                description = "Description: Enter this mode to scan and recognize your Arduino components directly using your Meta Quest 3 cameras. The system identifies the parts you wish to use, suggests possible projects, and provides step-by-step AR overlays to guide you through each process. We recommend using the SparkFun RedBoard kit for the best experience.";
+                description = "Enter this mode to scan and recognize your Arduino components directly using your Meta Quest 3 cameras. The system identifies the parts you wish to use, suggests possible projects, and provides step-by-step AR overlays to guide you through each process. We recommend using the SparkFun RedBoard kit for the best experience.";
                 sceneNumber = 1;
             }
             else
             {
                 title = "Project Ideas";
-                description = "Description: Browse a collection of project ideas built around the SparkFun RedBoard kit, as featured in the kit manual. Each project includes a detailed description and a list of required components, allowing you to recreate circuits or expand on them with your own modifications. It’s the perfect place to get inspired and explore what’s possible with the components you already have.";
+                description = "Browse a collection of project ideas built around the SparkFun RedBoard kit, as featured in the kit manual. Each project includes a detailed description and a list of required components, allowing you to recreate circuits or expand on them with your own modifications. It’s the perfect place to get inspired and explore what’s possible with the components you already have.";
                 sceneNumber = 3;
             }
 

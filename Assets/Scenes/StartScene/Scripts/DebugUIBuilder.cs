@@ -522,7 +522,7 @@ namespace PassthroughCameraSamples.StartScene
 
             return rt;
         }
-     
+
         public RectTransform AddComponentImage(Sprite sprite, int targetCanvas = 0, Action onClick = null)
         {
             var imageObject = new GameObject("DebugUIImage", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
@@ -548,6 +548,22 @@ namespace PassthroughCameraSamples.StartScene
 
             return rt;
         }
+        
+        public void LoadComponentImage(DebugUIBuilder uIBuilder, string imageName, int targetPane, Action onClick)
+                {
+                    // Load from Resources folder
+                    Sprite sprite = uIBuilder.LoadSpriteFromResources(imageName);
+                    if (sprite != null)
+                    {
+                        uIBuilder.AddComponentImage(sprite, targetPane, onClick);
+                    }
+                    else
+                    {
+                        Debug.LogError($"Failed to load image: {imageName}");
+                        // Add a placeholder or error message
+                        _ = uIBuilder.AddLabel("[Image Not Found]", targetPane);
+                    }
+                }
         
         public Sprite LoadSpriteFromResources(string imageName)
         {

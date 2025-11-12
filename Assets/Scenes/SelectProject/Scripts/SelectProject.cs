@@ -31,8 +31,14 @@ namespace PassthroughCameraSamples.Select
                 if (passthroughScenes.Count > 0)
             {
 
+                  uiBuilder.LoadComponentImage(uiBuilder, "icons/back-btn.png", DebugUIBuilder.DEBUG_PANE_LEFT, () =>
+                                {
+                                    LoadScene(1);
 
-                _ = uiBuilder.AddLabel("Select Project", DebugUIBuilder.DEBUG_PANE_LEFT, 50);
+
+
+                                });
+                _ = uiBuilder.AddLabel("Project Ideas", DebugUIBuilder.DEBUG_PANE_LEFT, 50);
 
 
                 // Load projects from JSON file
@@ -45,14 +51,17 @@ namespace PassthroughCameraSamples.Select
                     foreach (var project in projects.projects)
                     {
                         int selectedIndex = index;
-                        _ = uiBuilder.AddButton($"#{index + 1} {project.name}", () =>
+                        _ = uiBuilder.AddButton($"{index + 1}. {project.name}", () =>
                         {
 
                             uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_CENTER);
                             uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_RIGHT);
 
-                            _ = uiBuilder.AddLabel($"#{selectedIndex + 1} {project.name}", DebugUIBuilder.DEBUG_PANE_CENTER, 40);
+                            _ = uiBuilder.AddLabel($"{selectedIndex + 1}. {project.name}", DebugUIBuilder.DEBUG_PANE_CENTER, 40);
+                            uiBuilder.LoadImage($"projects-imgs/{selectedIndex + 1}.png", DebugUIBuilder.DEBUG_PANE_CENTER, 200);
                             _ = uiBuilder.AddParagraph($"{project.description}", DebugUIBuilder.DEBUG_PANE_CENTER, 25);
+                            _ = uiBuilder.AddLabel("*Reference image only.", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
+                            
                             _ = uiBuilder.AddLabel($"Components", DebugUIBuilder.DEBUG_PANE_RIGHT, 40);
                             _ = uiBuilder.AddLabel($"Press on a component image to view its 3D model", DebugUIBuilder.DEBUG_PANE_RIGHT, 25);
 
@@ -70,7 +79,7 @@ namespace PassthroughCameraSamples.Select
                                 {
                                     _ = uiBuilder.AddParagraph($"{component.quantity} {component.item}{plural}", DebugUIBuilder.DEBUG_PANE_RIGHT, 20);
                                 }
-                                LoadComponentImage("2dmod/" +component.item + ".jpg", DebugUIBuilder.DEBUG_PANE_RIGHT, () =>
+                                uiBuilder.LoadComponentImage(uiBuilder, "2dmod/" +component.item + ".jpg", DebugUIBuilder.DEBUG_PANE_RIGHT, () =>
                                 {
 
                                     GameObject prefab = Resources.Load<GameObject>($"3DI/{component.item}");
@@ -117,36 +126,16 @@ namespace PassthroughCameraSamples.Select
 
    
 
-        public void LoadComponentImage(string imageName, int targetPane, Action onClick)
-                {
-                    // Load from Resources folder
-                    Sprite sprite = DebugUIBuilder.Instance.LoadSpriteFromResources(imageName);
-                    if (sprite != null)
-                    {
-                        DebugUIBuilder.Instance.AddComponentImage(sprite, targetPane, onClick);
-                    }
-                    else
-                    {
-                        Debug.LogError($"Failed to load image: {imageName}");
-                        // Add a placeholder or error message
-                        _ = DebugUIBuilder.Instance.AddLabel("[Image Not Found]", targetPane);
-                    }
-                }
-
-        private void LoadProjectScene(int projectid, List<(string name, int quantity, int value)> components)
+   private void LoadScene(int idx)
         {
-            //Debug.Log("Load scene: " + idx);
-            StaticClass.projectid = projectid;
-            StaticClass.components = components.ToArray();
-            bool[] initialObjectFound = new bool[components.Count];
-            for (int i = 0; i < components.Count; i++)
+            if (idx == 1)
             {
-                initialObjectFound[i] = false;
+                StaticClass.projectid = -1;
+                DynamicProjectStaticClass.components = new List<string>();
             }
-
-            StaticClass.ObjectsFound = initialObjectFound; 
-
-            UnityEngine.SceneManagement.SceneManager.LoadScene(4);
+            DebugUIBuilder.Instance.Hide();
+            Debug.Log("Load scene: " + idx);
+            UnityEngine.SceneManagement.SceneManager.LoadScene(idx);
         }
     }
     
