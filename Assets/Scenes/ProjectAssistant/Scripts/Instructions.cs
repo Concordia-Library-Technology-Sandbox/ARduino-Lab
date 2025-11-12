@@ -52,7 +52,10 @@ namespace PassthroughCameraSamples.SelectProject
                 DebugUIBuilder.DEBUG_PANE_CENTER, 30);
 
 
-                _ = uiBuilder.AddButton("Start", () => LoadScene(5), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+                _ = uiBuilder.AddButton("Start", () => {
+                    StaticClass.RestartInventory = true;
+                    LoadScene(5); 
+                     }, -1, DebugUIBuilder.DEBUG_PANE_CENTER);
                 
                 uiBuilder.Show();
             }
