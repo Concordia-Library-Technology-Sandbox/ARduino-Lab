@@ -32,7 +32,7 @@ namespace PassthroughCameraSamples.SelectProject
             {
                 uiBuilder.LoadComponentImage(uiBuilder, "icons/back-btn.png", DebugUIBuilder.DEBUG_PANE_CENTER, () =>
                                 {
-                                    LoadScene(0);
+                                    LoadScene(1);
                                 });
                 _ = uiBuilder.AddLabel("Instructions", DebugUIBuilder.DEBUG_PANE_CENTER, 50);
 
