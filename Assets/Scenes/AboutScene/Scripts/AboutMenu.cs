@@ -61,7 +61,7 @@ namespace PassthroughCameraSamples.SelectProject
 
 
                 uiBuilder.LoadImage("abouts/1.jpg", DebugUIBuilder.DEBUG_PANE_RIGHT,1000);
-                _ = uiBuilder.AddLabel("Concordia University Library Technology Sandbox.", DebugUIBuilder.DEBUG_PANE_RIGHT, 20);
+                _ = uiBuilder.AddLabel("Concordia University Library Technology Sandbox.", DebugUIBuilder.DEBUG_PANE_RIGHT, 18);
 
 
                 uiBuilder.Show();
