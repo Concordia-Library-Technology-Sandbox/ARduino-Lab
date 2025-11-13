@@ -20,5 +20,6 @@ base.apk
 Assets/Secrets/
 .vscode/
 mono_crash.mem*.blob
+ARduino Lab_BurstDebugInformation_DoNotShip/
 
 
