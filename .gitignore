@@ -17,7 +17,7 @@ PerformanceTestRun*.*
 StreamingAssets*
 !NativeSamples.zip
 base.apk
-Assets/Secrets/
+Assets/Resources/secrets/
 .vscode/
 mono_crash.mem*.blob
 ARduino Lab_BurstDebugInformation_DoNotShip/
