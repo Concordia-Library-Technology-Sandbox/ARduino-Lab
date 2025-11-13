@@ -21,5 +21,6 @@ Assets/Secrets/
 .vscode/
 mono_crash.mem*.blob
 ARduino Lab_BurstDebugInformation_DoNotShip/
+passthroughcamera_BurstDebugInformation_DoNotShip/
 
 
