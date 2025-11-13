@@ -16,7 +16,3 @@ ProjectSettings\Packages\com.unity.testtools.codecoverage\Settings.json
 PerformanceTestRun*.*
 StreamingAssets*
 !NativeSamples.zip
-base.apk
-Assets/Secrets/
-.vscode/
-mono_crash.mem*.blob
