@@ -4217,6 +4217,55 @@ Transform:
   - {fileID: 761574437}
   m_Father: {fileID: 946435677}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &780588993
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 780588995}
+  - component: {fileID: 780588994}
+  m_Layer: 0
+  m_Name: OpenAIConnector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &780588994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 780588993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5044773a914fb2a3b8136e8206aea01d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  apiKey: 
+  selectedModel: 0
+  onJsonReceived:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!4 &780588995
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 780588993}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &783218656
 GameObject:
   m_ObjectHideFlags: 0
@@ -6312,6 +6361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67f0070ca85d114fb7f8dbe5e1a97c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  openAIConnector: {fileID: 780588994}
   webCamManager: {fileID: 109766167}
 --- !u!1 &1141912249
 GameObject:
@@ -11188,3 +11238,4 @@ SceneRoots:
   - {fileID: 1869043739}
   - {fileID: 1503347406}
   - {fileID: 1812373138}
+  - {fileID: 780588995}

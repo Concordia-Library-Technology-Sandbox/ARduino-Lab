@@ -5,12 +5,11 @@ using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.Networking;
 
-namespace QuestCameraKit.OpenAI
+namespace PassthroughCameraSamples.StartScene
 {
     public enum OpenAIVisionModel
     {
-        Gpt4O,
-        Gpt4OMini
+        Gpt41Mini
     }
 
     public static class OpenAIVisionModelExtensions
@@ -19,63 +18,68 @@ namespace QuestCameraKit.OpenAI
         {
             return model switch
             {
-                OpenAIVisionModel.Gpt4O => "gpt-4o",
-                OpenAIVisionModel.Gpt4OMini => "gpt-4o-mini",
+                OpenAIVisionModel.Gpt41Mini => "gpt-4.1-mini",
                 _ => "gpt-4o"
             };
         }
     }
 
+    [Serializable]
+    public class OpenAIRequestHeader
+    {
+        public string model;
+        public int max_tokens;
+        public OpenAIMessageShell[] messages;
+    }
+
+    [Serializable]
+    public class OpenAIMessageShell
+    {
+        public string role;
+        // content omitted because we inject it manually
+    }
+
     public class ArduinoImageOpenAIConnector : MonoBehaviour
     {
-        [Header("OpenAI Settings")]
-        [Tooltip("Your OpenAI API key. For prototyping only; do not hardcode in production.")]
-        public string apiKey = "YOUR_API_KEY";
-
-        [SerializeField] private OpenAIVisionModel selectedModel = OpenAIVisionModel.Gpt4O;
-
-        [Header("Events")]
-        [Tooltip("Invoked with the JSON string returned by the model.")]
+        public string apiKey;
+        [SerializeField] private OpenAIVisionModel selectedModel = OpenAIVisionModel.Gpt41Mini;
         public UnityEvent<string> onJsonReceived;
 
-        /// <summary>
-        /// Call this with a Texture2D from your camera/passthrough.
-        /// </summary>
+        private void OnEnable()
+        {
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                apiKey = LoadApiKey();
+            }
+        }
+
+        private string LoadApiKey()
+        {
+            TextAsset keyFile = Resources.Load<TextAsset>("secrets/api_key");
+            if (keyFile == null)
+            {
+                Debug.LogError("API key not found at Assets/Resources/secrets/api_key.txt");
+                return "";
+            }
+            return keyFile.text.Trim();
+        }
+
         public void AnalyzeArduinoComponents(Texture2D image)
         {
             if (image == null)
             {
-                Debug.LogError("AnalyzeArduinoComponents: image is null.");
+                Debug.LogError("Image is null.");
                 return;
             }
-
             StartCoroutine(SendImageRequest(image));
         }
 
         private IEnumerator SendImageRequest(Texture2D image)
         {
-            // Prepare image (resize and encode to JPG)
-            Texture2D processedImage;
-            if (image.width == 512 && image.height == 512 && image.format == TextureFormat.RGBA32)
-            {
-                processedImage = image;
-            }
-            else
-            {
-                processedImage = ResizeTexture(image, 512, 512);
-            }
+            // Encode image
+            Texture2D resized = ResizeTexture(image, 512, 512);
+            string base64 = Convert.ToBase64String(resized.EncodeToJPG(90));
 
-            byte[] imageBytes = processedImage.EncodeToJPG(90);
-            if (imageBytes == null || imageBytes.Length == 0)
-            {
-                Debug.LogError("Failed to encode image to JPG. Make sure the texture is readable.");
-                yield break;
-            }
-
-            string base64Image = Convert.ToBase64String(imageBytes);
-
-            // Build the user message content with text + image_url
-            // Prompt: detect only these components and return strict JSON.
             string command =
                 "You are an Arduino lab assistant. " +
                 "In this image, detect ONLY the following components and count how many of each are clearly visible:\n" +
@@ -102,121 +106,75 @@ namespace QuestCameraKit.OpenAI
                 "Only include components that are present with quantity > 0. " +
                 "Do not include any explanation or extra text, only valid JSON.";
 
-            string contentJson =
-                "{" +
-                    "\"type\":\"text\",\"text\":\"" + EscapeJson(command) + "\"" +
-                "}," +
-                "{" +
-                    "\"type\":\"image_url\",\"image_url\":{" +
-                        "\"url\":\"data:image/jpeg;base64," + base64Image + "\"" +
-                    "}" +
-                "}";
-
-            string payloadJson =
-                "{" +
-                    $"\"model\":\"{selectedModel.ToModelString()}\"," +
-                    "\"messages\":[{" +
-                        "\"role\":\"user\"," +
-                        "\"content\":[" + contentJson + "]" +
-                    "}]," +
-                    "\"max_tokens\":300" +
-                "}";
-
-            using UnityWebRequest request = new UnityWebRequest("https://api.openai.com/v1/chat/completions", "POST");
-            byte[] bodyRaw = Encoding.UTF8.GetBytes(payloadJson);
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-            request.SetRequestHeader("Authorization", "Bearer " + apiKey);
-
-            Debug.Log("Sending OpenAI vision request...");
-            yield return request.SendWebRequest();
-
-            if (request.result == UnityWebRequest.Result.ConnectionError ||
-                request.result == UnityWebRequest.Result.ProtocolError)
+            // Build SAFE top-level JSON (without content)
+            OpenAIRequestHeader shell = new OpenAIRequestHeader
             {
-                Debug.LogError($"Error sending request: {request.error} (Response code: {request.responseCode})");
-                Debug.LogError(request.downloadHandler.text);
+                model = selectedModel.ToModelString(),
+                max_tokens = 300,
+                messages = new[]
+                {
+                    new OpenAIMessageShell { role = "user" }
+                }
+            };
+
+            string shellJson = JsonUtility.ToJson(shell);
+
+            // Build content array manually (correct JSON)
+            string contentJson =
+                "\"content\":[" +
+                "{ \"type\":\"text\", \"text\":" + EscapeJSON(command) + " }," +
+                "{ \"type\":\"image_url\", \"image_url\":{ \"url\":\"data:image/jpeg;base64," + base64 + "\" } }" +
+                "]";
+
+            // Inject content into the shell JSON
+            string finalJson = shellJson.Replace(
+                "\"role\":\"user\"",
+                "\"role\":\"user\"," + contentJson
+            );
+
+            Debug.Log("OpenAI Request Payload: " + finalJson);
+
+            // Send request
+            using UnityWebRequest req =
+                new UnityWebRequest("https://api.openai.com/v1/chat/completions", "POST");
+
+            byte[] body = Encoding.UTF8.GetBytes(finalJson);
+            req.uploadHandler = new UploadHandlerRaw(body);
+            req.downloadHandler = new DownloadHandlerBuffer();
+            req.SetRequestHeader("Content-Type", "application/json");
+            req.SetRequestHeader("Authorization", "Bearer " + apiKey);
+
+            yield return req.SendWebRequest();
+
+            if (req.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("OpenAI Error: " + req.downloadHandler.text);
             }
             else
             {
-                string raw = request.downloadHandler.text;
-                Debug.Log("Raw OpenAI response: " + raw);
-
-                // Very simple JSON extraction using string search or a lightweight parser library.
-                // The important part is: choices[0].message.content contains the JSON we asked for.
-                // Here we just use a quick manual extraction assuming the format is stable.
-                try
-                {
-                    // If you have OVRSimpleJSON, you can use that instead:
-                    // var json = OVRSimpleJSON.JSON.Parse(raw);
-                    // string content = json["choices"][0]["message"]["content"].Value;
-
-                    string content = ExtractContentField(raw);
-                    Debug.Log("OpenAI JSON content: " + content);
-
-                    onJsonReceived?.Invoke(content);
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError("Failed to extract JSON content: " + ex.Message);
-                }
+                string raw = req.downloadHandler.text;
+                Debug.Log("Raw response: " + raw);
+                onJsonReceived?.Invoke(raw);
             }
         }
 
-        /// <summary>
-        /// Resizes or converts the given texture to a 512x512 RGBA32 texture.
-        /// </summary>
-        private Texture2D ResizeTexture(Texture2D source, int targetWidth, int targetHeight)
+        private string EscapeJSON(string s)
         {
-            RenderTexture rt = RenderTexture.GetTemporary(targetWidth, targetHeight);
-            rt.filterMode = FilterMode.Bilinear;
-            RenderTexture previous = RenderTexture.active;
+            return "\"" + s.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n") + "\"";
+        }
+
+        private Texture2D ResizeTexture(Texture2D src, int w, int h)
+        {
+            RenderTexture rt = RenderTexture.GetTemporary(w, h);
             RenderTexture.active = rt;
-            Graphics.Blit(source, rt);
+            Graphics.Blit(src, rt);
 
-            Texture2D result = new Texture2D(targetWidth, targetHeight, TextureFormat.RGBA32, false);
-            result.ReadPixels(new Rect(0, 0, targetWidth, targetHeight), 0, 0);
-            result.Apply();
-
-            RenderTexture.active = previous;
+            Texture2D tex = new Texture2D(w, h, TextureFormat.RGBA32, false);
+            tex.ReadPixels(new Rect(0, 0, w, h), 0, 0);
+            tex.Apply();
+            RenderTexture.active = null;
             RenderTexture.ReleaseTemporary(rt);
-            return result;
-        }
-
-        /// <summary>
-        /// Escapes quotes for embedding text safely inside JSON strings.
-        /// </summary>
-        private string EscapeJson(string input)
-        {
-            return input.Replace("\\", "\\\\").Replace("\"", "\\\"");
-        }
-
-        /// <summary>
-        /// Very simple extraction of choices[0].message.content as a string.
-        /// If you already use OVRSimpleJSON, replace this with proper parsing.
-        /// </summary>
-        private string ExtractContentField(string rawJson)
-        {
-            // Recommended: use OVRSimpleJSON instead of this manual helper:
-            // var json = OVRSimpleJSON.JSON.Parse(rawJson);
-            // return json["choices"][0]["message"]["content"].Value;
-
-            int contentIndex = rawJson.IndexOf("\"content\":", StringComparison.Ordinal);
-            if (contentIndex < 0)
-                throw new Exception("content field not found");
-
-            int firstQuote = rawJson.IndexOf('\"', contentIndex + 10);
-            int lastQuote = rawJson.LastIndexOf('\"');
-
-            if (firstQuote < 0 || lastQuote <= firstQuote)
-                throw new Exception("content string quotes not found");
-
-            string content = rawJson.Substring(firstQuote + 1, lastQuote - firstQuote - 1);
-
-            // Unescape basic JSON escapes
-            content = content.Replace("\\n", "\n").Replace("\\\"", "\"");
-            return content;
+            return tex;
         }
     }
 }
