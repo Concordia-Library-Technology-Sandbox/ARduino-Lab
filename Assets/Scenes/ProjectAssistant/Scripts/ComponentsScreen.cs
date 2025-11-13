@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Meta.XR.Samples;
-using PassthroughCameraSamples.StartScene; 
+using PassthroughCameraSamples.StartScene;
 using UnityEngine;
 
 namespace PassthroughCameraSamples.StartScene
@@ -13,6 +13,8 @@ namespace PassthroughCameraSamples.StartScene
     // Create menu of all scenes included in the build.
     public class ComponentsScreen : MonoBehaviour
     {
+        [SerializeField] private WebCamTextureManager webCamManager;
+                    
         private DebugUIBuilder uiBuilder;
         private List<Component> nonZeroComponents = new List<Component>();
         private int currentPage = 0;
@@ -72,7 +74,7 @@ namespace PassthroughCameraSamples.StartScene
             _ = uiBuilder.AddLabel("My Components", DebugUIBuilder.DEBUG_PANE_LEFT, 50);
 
             // Top actions (always visible)
-            _ = uiBuilder.AddButton("Scan Using Camera", () => LoadScene(6), -1, DebugUIBuilder.DEBUG_PANE_LEFT);
+            _ = uiBuilder.AddButton("Scan Using Camera", () => takePicture(), -1, DebugUIBuilder.DEBUG_PANE_LEFT);
             _ = uiBuilder.AddButton("Add Manually", () => LoadScene(6), -1, DebugUIBuilder.DEBUG_PANE_LEFT);
 
             if (nonZeroComponents == null || nonZeroComponents.Count == 0)
@@ -132,6 +134,21 @@ namespace PassthroughCameraSamples.StartScene
             }
         }
 
+
+        private void takePicture()
+        {
+            WebCamTexture webCamTexture = webCamManager.WebCamTexture;
+
+            if (webCamTexture == null || webCamTexture.width <= 16 || webCamTexture.height <= 16)
+            {
+                return;
+            }
+
+            Color32[] camPixels = webCamTexture.GetPixels32();
+            
+            
+
+        }
         private string FormatComponentName(string componentName)
         {
             return char.ToUpper(componentName[0]) + componentName.Substring(1)
