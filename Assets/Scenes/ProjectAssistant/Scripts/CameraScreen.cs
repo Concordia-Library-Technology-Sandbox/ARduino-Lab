@@ -39,7 +39,11 @@ namespace PassthroughCameraSamples.SelectProject
             uiBuilder.LoadImage("icons/camera.png", DebugUIBuilder.DEBUG_PANE_LEFT, 110);
 
             // Title
-            _ = uiBuilder.AddLabel("Scan Using Camera", DebugUIBuilder.DEBUG_PANE_LEFT, 40);
+            _ = uiBuilder.AddLabel("Scan Using Camera", DebugUIBuilder.DEBUG_PANE_LEFT, 50);
+
+            _ = uiBuilder.AddParagraph(
+            "Use your camera to scan Arduino components and detect what's on your workspace.",
+                DebugUIBuilder.DEBUG_PANE_LEFT, 22);
 
             // Main Action
             _ = uiBuilder.AddButton("Scan Components", () => takePicture(),
@@ -111,6 +115,21 @@ namespace PassthroughCameraSamples.SelectProject
                 return;
             }
 
+            _ = uiBuilder.AddButton("Add to Inventory", () =>
+            {
+                Debug.Log("Inventory add confirmed.");
+
+                foreach (var comp in detectedComponents)
+                {
+                    string item = comp["item"];
+                    int qty = comp["quantity"];
+
+                    StaticClass.AddComponentQuantity(item, qty);
+                }
+
+                LoadScene(5);
+           }, -1, DebugUIBuilder.DEBUG_PANE_LEFT);
+
             // Section Title
             _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
 
@@ -139,12 +158,11 @@ namespace PassthroughCameraSamples.SelectProject
 
                 string label = $"{FormatComponentName(item)} (x{qty})";
 
-                // Item label
-                _ = uiBuilder.AddLabel(label, DebugUIBuilder.DEBUG_PANE_LEFT, 28);
-
                 // Thumbnail
                 uiBuilder.LoadComponentImage(uiBuilder, $"2dmod/{item}.jpg",
                                              DebugUIBuilder.DEBUG_PANE_LEFT, () => { });
+
+                _ = uiBuilder.AddLabel(label, DebugUIBuilder.DEBUG_PANE_LEFT, 23);
 
                 _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
             }
@@ -166,22 +184,6 @@ namespace PassthroughCameraSamples.SelectProject
                         ShowPage();
                     }, -1, DebugUIBuilder.DEBUG_PANE_LEFT);
             }
-
-            // FINAL ACTION
-            _ = uiBuilder.AddButton("Add Items to Inventory", () =>
-            {
-                Debug.Log("Inventory add confirmed.");
-
-                foreach (var comp in detectedComponents)
-                {
-                    string item = comp["item"];
-                    int qty = comp["quantity"];
-
-                    StaticClass.AddComponentQuantity(item, qty);
-                }
-
-                LoadScene(5);
-           }, -1, DebugUIBuilder.DEBUG_PANE_LEFT);
 
             uiBuilder.Show();
         }

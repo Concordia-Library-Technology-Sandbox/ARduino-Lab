@@ -20,7 +20,7 @@ namespace PassthroughCameraSamples.StartScene
         private DebugUIBuilder uiBuilder;
         private List<Component> nonZeroComponents = new List<Component>();
         private int currentPage = 0;
-        private const int pageSize = 4;
+        private const int pageSize = 3;
 
         private void Start()
         {
@@ -73,17 +73,24 @@ namespace PassthroughCameraSamples.StartScene
                 LoadScene(4);
             });
 
-            uiBuilder.LoadImage("icons/inventory.png", DebugUIBuilder.DEBUG_PANE_LEFT, 140);
+            uiBuilder.LoadImage("icons/inventory.png", DebugUIBuilder.DEBUG_PANE_LEFT, 110);
 
-            _ = uiBuilder.AddLabel("Component Inventory", DebugUIBuilder.DEBUG_PANE_LEFT, 40);
+            _ = uiBuilder.AddLabel("My Inventory", DebugUIBuilder.DEBUG_PANE_LEFT, 50);
+
+            _ = uiBuilder.AddParagraph(
+                "View and manage all the Arduino components you've added.",
+                DebugUIBuilder.DEBUG_PANE_LEFT, 22);
+
+            
 
             // Top actions (always visible)
             _ = uiBuilder.AddButton("Scan Using Camera", () => LoadScene(7), -1, DebugUIBuilder.DEBUG_PANE_LEFT);
             _ = uiBuilder.AddButton("Add Manually", () => LoadScene(6), -1, DebugUIBuilder.DEBUG_PANE_LEFT);
 
+            _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
+
             if (nonZeroComponents == null || nonZeroComponents.Count == 0)
             {
-                _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
                 _ = uiBuilder.AddLabel("No components added.", DebugUIBuilder.DEBUG_PANE_LEFT, 28);
                 return;
             }
@@ -95,7 +102,10 @@ namespace PassthroughCameraSamples.StartScene
 
             if (showPagination)
             {
-                _ = uiBuilder.AddLabel($"Page {currentPage + 1} / {totalPages}", DebugUIBuilder.DEBUG_PANE_LEFT, 40);
+                
+                _ = uiBuilder.AddLabel($"Page {currentPage + 1} / {totalPages}", DebugUIBuilder.DEBUG_PANE_LEFT, 32);
+                _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
+
             }
 
             int startIndex = currentPage * pageSize;
@@ -107,9 +117,9 @@ namespace PassthroughCameraSamples.StartScene
 
 
                 string display = $"{FormatComponentName(comp.item)} (x{comp.quantity})";
-                _ = uiBuilder.AddLabel(display, DebugUIBuilder.DEBUG_PANE_LEFT, 28);
 
                 uiBuilder.LoadComponentImage(uiBuilder, "2dmod/" + comp.item + ".jpg", DebugUIBuilder.DEBUG_PANE_LEFT, () => { });
+                _ = uiBuilder.AddLabel(display, DebugUIBuilder.DEBUG_PANE_LEFT, 23);
 
                 _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
 

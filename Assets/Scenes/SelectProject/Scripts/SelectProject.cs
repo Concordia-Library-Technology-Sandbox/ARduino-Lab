@@ -68,15 +68,13 @@ namespace PassthroughCameraSamples.Select
                             {
                                 var component = project.components[i];
 
-                                var plural = component.quantity > 1 ? "s" : "";
-
                                 if (component.item == "resistance")
                                 {
-                                    _ = uiBuilder.AddParagraph($"{component.quantity} {component.item}{plural} {component.value}Ω", DebugUIBuilder.DEBUG_PANE_RIGHT, 20);
+                                    _ = uiBuilder.AddParagraph($"{component.item} {component.value}Ω (x{component.quantity})", DebugUIBuilder.DEBUG_PANE_RIGHT, 23);
                                 }
                                 else
                                 {
-                                    _ = uiBuilder.AddParagraph($"{component.quantity} {component.item}{plural}", DebugUIBuilder.DEBUG_PANE_RIGHT, 20);
+                                    _ = uiBuilder.AddParagraph($"{component.item} (x{component.quantity})", DebugUIBuilder.DEBUG_PANE_RIGHT, 23);
                                 }
                                 uiBuilder.LoadComponentImage(uiBuilder, "2dmod/" +component.item + ".jpg", DebugUIBuilder.DEBUG_PANE_RIGHT, () =>
                                 {

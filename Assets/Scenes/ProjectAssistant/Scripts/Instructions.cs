@@ -36,7 +36,7 @@ namespace PassthroughCameraSamples.SelectProject
                                 });
                 uiBuilder.LoadImage("icons/instructions.png", DebugUIBuilder.DEBUG_PANE_CENTER, 180);
 
-                _ = uiBuilder.AddLabel("Instructions", DebugUIBuilder.DEBUG_PANE_CENTER, 40);
+                _ = uiBuilder.AddLabel("Instructions", DebugUIBuilder.DEBUG_PANE_CENTER, 50);
 
 
 

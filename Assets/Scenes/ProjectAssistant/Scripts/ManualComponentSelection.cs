@@ -10,7 +10,7 @@ namespace PassthroughCameraSamples.SelectProject
     {
         private List<PassthroughCameraSamples.StartScene.Component> components;
         private int currentPage = 0;
-        private const int pageSize = 3;
+        private const int pageSize = 2;
         private DebugUIBuilder uiBuilder;
 
         private void Start()
@@ -21,9 +21,6 @@ namespace PassthroughCameraSamples.SelectProject
             {
                 LoadScene(5);
             });
-
-            _ = uiBuilder.AddLabel("Add Components Manually", DebugUIBuilder.DEBUG_PANE_LEFT, 50);
-            _ = uiBuilder.AddLabel("Select components to add to your project:", DebugUIBuilder.DEBUG_PANE_LEFT, 30);
 
             if (StaticClass.Components?.components != null)
             {
@@ -39,13 +36,24 @@ namespace PassthroughCameraSamples.SelectProject
             // Clear UI and redraw same layout
             uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_LEFT);
 
+            
+
             uiBuilder.LoadComponentImage(uiBuilder, "icons/back-btn.png", DebugUIBuilder.DEBUG_PANE_LEFT, () =>
             {
                 LoadScene(5);
             });
 
+             _ = uiBuilder.AddLabel("Add Manually", DebugUIBuilder.DEBUG_PANE_LEFT, 50);
+            _ = uiBuilder.AddParagraph("Add components manually to your project.", DebugUIBuilder.DEBUG_PANE_LEFT, 22);
+
+            _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
+
+
             _ = uiBuilder.AddLabel($"Page {currentPage + 1} / {Mathf.CeilToInt((float)components.Count / pageSize)}",
-                                   DebugUIBuilder.DEBUG_PANE_LEFT, 40);
+                                   DebugUIBuilder.DEBUG_PANE_LEFT, 32);
+            
+            _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
+
 
             int startIndex = currentPage * pageSize;
             int endIndex = Mathf.Min(startIndex + pageSize, components.Count);
@@ -58,8 +66,8 @@ namespace PassthroughCameraSamples.SelectProject
                 string displayText = $"{FormatComponentName(component.item)} (x{component.quantity})";
 
                 // Label + image
-                _ = uiBuilder.AddLabel(displayText, DebugUIBuilder.DEBUG_PANE_LEFT, 30);
                 uiBuilder.LoadComponentImage(uiBuilder, "2dmod/" + component.item + ".jpg", DebugUIBuilder.DEBUG_PANE_LEFT, () => { });
+                _ = uiBuilder.AddLabel(displayText, DebugUIBuilder.DEBUG_PANE_LEFT, 23);
 
                 // Add + and - buttons to modify the static list
                 _ = uiBuilder.AddButton($"(+) Add 1", () =>
