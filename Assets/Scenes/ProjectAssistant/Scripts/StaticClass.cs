@@ -35,4 +35,17 @@ public static class StaticClass
             Components.components.Add(new Component { item = item, quantity = quantity });
         }
     }
+
+    public static string generateCompoundStringOfComponents()
+    {
+        string result = "";
+        foreach (var component in Components.components)
+        {
+            if (component.quantity > 0){
+             result += component.item + " x" + component.quantity + "\n";
+            }
+        }
+
+        return result;
+    }
 }

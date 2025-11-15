@@ -9,7 +9,8 @@ namespace PassthroughCameraSamples.StartScene
 {
     public enum OpenAIVisionModel
     {
-        GPTModel
+        GPTModel,
+        GPTModel5
     }
 
     public static class OpenAIVisionModelExtensions
@@ -18,7 +19,8 @@ namespace PassthroughCameraSamples.StartScene
         {
             return model switch
             {
-                OpenAIVisionModel.GPTModel => "chatgpt-4o-latest"        
+                OpenAIVisionModel.GPTModel => "chatgpt-4o-latest",
+                OpenAIVisionModel.GPTModel5=> "gpt-4.1-mini",        
                     };
         }
     }
@@ -30,6 +32,7 @@ namespace PassthroughCameraSamples.StartScene
         public int max_tokens;
         public OpenAIMessageShell[] messages;
     }
+
 
     [Serializable]
     public class OpenAIMessageShell
@@ -157,6 +160,84 @@ namespace PassthroughCameraSamples.StartScene
             }
         }
 
+
+        public void generateProjects(string componentsCompoundString)
+        {
+            StartCoroutine(SendProjectGenerationRequest(componentsCompoundString));
+        }
+
+        private IEnumerator SendProjectGenerationRequest(string componentsCompoundString)
+        {
+        string prompt =
+        "You are an Arduino project generator. " +
+        "Using ONLY the following available components:\n" +
+        componentsCompoundString +
+        "\nGenerate several creative project ideas, even if they reuse the same components in different ways. " +
+        "If only one or two meaningful projects are possible, return only those. " +
+        "Do not invent components.\n\n" +
+
+        "For each project, provide:\n" +
+        "• A short, creative title\n" +
+        "• A brief description\n" +
+        "• A list of components required (each with item and quantity)\n\n" +
+
+        "Return ONLY STRICT JSON in this exact schema:\n" +
+        "{ \"projects\": [ " +
+        "{ \"title\": string, \"description\": string, \"components\": [ " +
+        "{ \"item\": string, \"quantity\": number } ] } ] }";
+
+
+
+
+            // Build request JSON
+            OpenAIRequestHeader request = new OpenAIRequestHeader
+            {
+                model = selectedModel.ToModelString(),
+                max_tokens = 1000,
+                messages = new[]
+                {
+                    new OpenAIMessageShell
+                    {
+                        role = "user"
+                    }
+                }
+            };
+
+            string requestJson = JsonUtility.ToJson(request);
+            string contentJson =
+                "\"content\": " + EscapeJSON(prompt);
+
+            string finalJson = requestJson.Replace(
+                "\"role\":\"user\"",
+                "\"role\":\"user\"," + contentJson
+            );
+
+            Debug.Log("OpenAI Project Generation Request Payload: " + finalJson);
+
+            // Send request
+            using UnityWebRequest req =
+                new UnityWebRequest("https://api.openai.com/v1/chat/completions", "POST");
+
+            byte[] body = Encoding.UTF8.GetBytes(finalJson);
+            req.uploadHandler = new UploadHandlerRaw(body);
+            req.downloadHandler = new DownloadHandlerBuffer();
+            req.SetRequestHeader("Content-Type", "application/json");
+            req.SetRequestHeader("Authorization", "Bearer " + apiKey);
+
+            yield return req.SendWebRequest();
+
+            if (req.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("OpenAI Error: " + req.downloadHandler.text);
+            }
+            else
+            {
+                string raw = req.downloadHandler.text;
+                Debug.Log("Raw project generation response: " + raw);
+                onJsonReceived?.Invoke(raw);
+            }
+        }
+        
         private string EscapeJSON(string s)
         {
             return "\"" + s.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n") + "\"";

@@ -43,8 +43,6 @@ namespace PassthroughCameraSamples.StartScene
                 StaticClass.RestartInventory = false;
             }
 
-            // Build RIGHT pane once (not affected by left-pane pagination redraws)
-            _ = uiBuilder.AddButton("Generate Projects", () => LoadScene(6), -1, DebugUIBuilder.DEBUG_PANE_RIGHT);
 
             // Precompute list to paginate
             if (StaticClass.Components != null && StaticClass.Components.components != null)
@@ -145,6 +143,21 @@ namespace PassthroughCameraSamples.StartScene
                         ShowPage();
                     }, -1, DebugUIBuilder.DEBUG_PANE_LEFT);
                 }
+            }
+
+            if (nonZeroComponents.Count >= 3)
+            {
+             uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_RIGHT);
+              
+            _ = uiBuilder.AddButton("Suggest Projects", () => LoadScene(8), -1, DebugUIBuilder.DEBUG_PANE_RIGHT);
+            }
+            else
+            {
+             uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_RIGHT);
+
+            _ = uiBuilder.AddParagraph(
+                "Add at least 3 different components to get project suggestions.",
+                DebugUIBuilder.DEBUG_PANE_RIGHT, 22);
             }
         }
 

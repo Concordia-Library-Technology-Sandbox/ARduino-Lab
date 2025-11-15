@@ -29,6 +29,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ProjectAssistant/CameraScreen.unity
     guid: c524c6bd9d0ce657a924938757e37adb
+  - enabled: 1
+    path: Assets/Scenes/ProjectAssistant/ProjectSuggestions.unity
+    guid: e59396705d15d90e3b8306f4f5755f12
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: f2bf97b3acdb64248a707c407c9fc54e, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: a971eac5e950046e586c5e153e32d05c, type: 2}
