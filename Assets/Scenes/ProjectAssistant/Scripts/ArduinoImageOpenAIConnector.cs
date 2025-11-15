@@ -9,7 +9,7 @@ namespace PassthroughCameraSamples.StartScene
 {
     public enum OpenAIVisionModel
     {
-        Gpt41Mini
+        GPTModel
     }
 
     public static class OpenAIVisionModelExtensions
@@ -18,9 +18,8 @@ namespace PassthroughCameraSamples.StartScene
         {
             return model switch
             {
-                OpenAIVisionModel.Gpt41Mini => "gpt-4.1-mini",
-                _ => "gpt-4o"
-            };
+                OpenAIVisionModel.GPTModel => "chatgpt-4o-latest"        
+                    };
         }
     }
 
@@ -42,7 +41,7 @@ namespace PassthroughCameraSamples.StartScene
     public class ArduinoImageOpenAIConnector : MonoBehaviour
     {
         public string apiKey;
-        [SerializeField] private OpenAIVisionModel selectedModel = OpenAIVisionModel.Gpt41Mini;
+        [SerializeField] private OpenAIVisionModel selectedModel = OpenAIVisionModel.GPTModel;
         public UnityEvent<string> onJsonReceived;
 
         private void OnEnable()
@@ -82,7 +81,7 @@ namespace PassthroughCameraSamples.StartScene
 
             string command =
                 "You are an Arduino lab assistant. " +
-                "In this image, detect ONLY the following components and count how many of each are clearly visible:\n" +
+                "In this image,detect ONLY the following components and count how many of each are clearly visible:\n" +
                 "- arduino\n" +
                 "- breadboard\n" +
                 "- DC_Motor\n" +
@@ -110,7 +109,7 @@ namespace PassthroughCameraSamples.StartScene
             OpenAIRequestHeader shell = new OpenAIRequestHeader
             {
                 model = selectedModel.ToModelString(),
-                max_tokens = 300,
+                max_tokens = 500,
                 messages = new[]
                 {
                     new OpenAIMessageShell { role = "user" }

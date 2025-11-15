@@ -73,10 +73,10 @@ namespace PassthroughCameraSamples.StartScene
                 LoadScene(4);
             });
 
-            _ = uiBuilder.AddLabel("My Components", DebugUIBuilder.DEBUG_PANE_LEFT, 50);
+            _ = uiBuilder.AddLabel("Component Inventory", DebugUIBuilder.DEBUG_PANE_LEFT, 50);
 
             // Top actions (always visible)
-            _ = uiBuilder.AddButton("Scan Using Camera", () => takePicture(), -1, DebugUIBuilder.DEBUG_PANE_LEFT);
+            _ = uiBuilder.AddButton("Scan Using Camera", () => LoadScene(7), -1, DebugUIBuilder.DEBUG_PANE_LEFT);
             _ = uiBuilder.AddButton("Add Manually", () => LoadScene(6), -1, DebugUIBuilder.DEBUG_PANE_LEFT);
 
             if (nonZeroComponents == null || nonZeroComponents.Count == 0)
@@ -136,77 +136,6 @@ namespace PassthroughCameraSamples.StartScene
             }
         }
 
-
-        private void takePicture()
-        {
-
-            Debug.Log("Taking picture from webcam texture...");
-            WebCamTexture webCamTexture = webCamManager.WebCamTexture;
-
-            if (webCamTexture == null || webCamTexture.width <= 16 || webCamTexture.height <= 16)
-            {
-                return;
-            }
-
-
-            // Capture frame
-            Texture2D frame = new Texture2D(webCamTexture.width, webCamTexture.height, TextureFormat.RGBA32, false);
-            frame.SetPixels32(webCamTexture.GetPixels32());
-            frame.Apply();
-
-            Debug.Log("Captured camera frame. Sending to OpenAI...");
-
-            // Show status to user in LEFT pane
-            if (uiBuilder != null)
-            {
-                _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
-                _ = uiBuilder.AddLabel("Captured camera frame. Sending to OpenAI...", DebugUIBuilder.DEBUG_PANE_LEFT, 28);
-            }
-
-            // Send to your OpenAI vision connector
-            openAIConnector.AnalyzeArduinoComponents(frame);
-
-            // Listen for JSON
-            openAIConnector.onJsonReceived.AddListener(OnComponentsJsonReceived);
-        }
-
-        private void OnComponentsJsonReceived(string json)
-        {
-            Debug.Log("Received JSON from OpenAI: " + json);
-
-            try
-            {
-                var parsed = JsonUtility.FromJson<ComponentList>(json);
-
-                _ = uiBuilder.AddLabel($"Components detected: {parsed.components.Count}", DebugUIBuilder.DEBUG_PANE_LEFT, 28);
-                if (parsed != null && parsed.components != null)
-                {
-                    // Merge counts with StaticClass.Components
-                    foreach (var comp in parsed.components)
-                    {
-                        var localComp = StaticClass.Components.components.Find(c => c.item == comp.item);
-                        if (localComp != null)
-                        {
-                            localComp.quantity += comp.quantity;
-                        }
-                    }
-
-                    // Refresh non-zero list
-                    nonZeroComponents = StaticClass.Components.components.FindAll(c => c.quantity > 0);
-
-                    // Refresh left pane
-                    ShowPage();
-                }
-                else
-                {
-                    Debug.LogError("Parsed JSON was null or invalid");
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError("Failed to parse component JSON: " + ex.Message);
-            }
-        }
 
         private string FormatComponentName(string componentName)
         {
