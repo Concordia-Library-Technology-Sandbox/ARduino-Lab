@@ -20,7 +20,7 @@ namespace PassthroughCameraSamples.SelectProject
         // Pagination
         private List<JSONNode> detectedComponents = new List<JSONNode>();
         private int currentPage = 0;
-        private const int pageSize = 4;
+        private const int pageSize = 3;
 
         private void Start()
         {
@@ -36,8 +36,10 @@ namespace PassthroughCameraSamples.SelectProject
             uiBuilder.LoadComponentImage(uiBuilder, "icons/back-btn.png",
                 DebugUIBuilder.DEBUG_PANE_LEFT, () => LoadScene(5));
 
+            uiBuilder.LoadImage("icons/camera.png", DebugUIBuilder.DEBUG_PANE_LEFT, 110);
+
             // Title
-            _ = uiBuilder.AddLabel("Scan Using Camera", DebugUIBuilder.DEBUG_PANE_LEFT, 50);
+            _ = uiBuilder.AddLabel("Scan Using Camera", DebugUIBuilder.DEBUG_PANE_LEFT, 40);
 
             // Main Action
             _ = uiBuilder.AddButton("Scan Components", () => takePicture(),
@@ -110,8 +112,6 @@ namespace PassthroughCameraSamples.SelectProject
             }
 
             // Section Title
-            _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
-            _ = uiBuilder.AddLabel("Detected Components", DebugUIBuilder.DEBUG_PANE_LEFT, 40);
             _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
 
             // Pagination info

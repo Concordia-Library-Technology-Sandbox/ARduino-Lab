@@ -20,7 +20,7 @@ namespace PassthroughCameraSamples.StartScene
         private DebugUIBuilder uiBuilder;
         private List<Component> nonZeroComponents = new List<Component>();
         private int currentPage = 0;
-        private const int pageSize = 5;
+        private const int pageSize = 4;
 
         private void Start()
         {
@@ -72,6 +72,8 @@ namespace PassthroughCameraSamples.StartScene
             {
                 LoadScene(4);
             });
+
+            uiBuilder.LoadImage("icons/inventory.png", DebugUIBuilder.DEBUG_PANE_LEFT, 140);
 
             _ = uiBuilder.AddLabel("Component Inventory", DebugUIBuilder.DEBUG_PANE_LEFT, 40);
 
