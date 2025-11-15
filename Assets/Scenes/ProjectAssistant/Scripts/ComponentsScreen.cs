@@ -73,7 +73,7 @@ namespace PassthroughCameraSamples.StartScene
                 LoadScene(4);
             });
 
-            _ = uiBuilder.AddLabel("Component Inventory", DebugUIBuilder.DEBUG_PANE_LEFT, 50);
+            _ = uiBuilder.AddLabel("Component Inventory", DebugUIBuilder.DEBUG_PANE_LEFT, 40);
 
             // Top actions (always visible)
             _ = uiBuilder.AddButton("Scan Using Camera", () => LoadScene(7), -1, DebugUIBuilder.DEBUG_PANE_LEFT);
