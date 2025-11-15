@@ -35,7 +35,9 @@ namespace PassthroughCameraSamples.SelectProject
                                 {
                                     LoadScene(0);
                                 });
-                _ = uiBuilder.AddLabel("Start", DebugUIBuilder.DEBUG_PANE_CENTER, 50);
+
+                
+                _ = uiBuilder.AddLabel("Start", DebugUIBuilder.DEBUG_PANE_CENTER, 40);
 
                 //Buttons
                 _ = uiBuilder.AddButton("Project Assistant", () => loadDescription(uiBuilder, 1), -1, DebugUIBuilder.DEBUG_PANE_CENTER);

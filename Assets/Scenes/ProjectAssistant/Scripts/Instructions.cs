@@ -34,23 +34,23 @@ namespace PassthroughCameraSamples.SelectProject
                                 {
                                     LoadScene(1);
                                 });
-                uiBuilder.LoadImage("icons/instructions.png", DebugUIBuilder.DEBUG_PANE_CENTER, 180);
+                uiBuilder.LoadImage("icons/instructions.png", DebugUIBuilder.DEBUG_PANE_CENTER, 110);
 
                 _ = uiBuilder.AddLabel("Instructions", DebugUIBuilder.DEBUG_PANE_CENTER, 50);
 
 
+                _ = uiBuilder.AddParagraph(
+                    "Welcome to the ARduino Project Assistant!\n\n" +
+                    "Use your Meta Quest 3 cameras to recognize Arduino components and build projects with AR overlays.\n\n" +
+                    "Before you start:\n" +
+                    "• Place your components on a flat, well-lit surface.\n" +
+                    "• The SparkFun RedBoard kit works best.\n\n" +
+                    "Steps:\n" +
+                    "1. Add your components using camera detection or manual entry.\n" +
+                    "2. Review your detected component list.\n" +
+                    "3. Press the Generate Projects button on the right for project suggestions.\n\n",
+                    DebugUIBuilder.DEBUG_PANE_CENTER, 23);
 
-               _ = uiBuilder.AddParagraph(
-                "Welcome to the ARduino Project Assistant!\n\n" +
-                "Use your Meta Quest 3 cameras to recognize Arduino components and build projects with AR overlays.\n\n" +
-                "Before you start:\n" +
-                "• Have your components ready on a flat, well-lit surface.\n" +
-                "• The SparkFun RedBoard kit works best.\n\n" +
-                "Steps:\n" +
-                "1. Click Scan Components.\n" +
-                "2. View the detected list.\n" +
-                "3. Follow the AR instructions to build your project.",
-                DebugUIBuilder.DEBUG_PANE_CENTER, 30);
 
 
                 _ = uiBuilder.AddButton("Start", () => {
