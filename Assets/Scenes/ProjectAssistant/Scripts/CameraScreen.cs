@@ -171,7 +171,17 @@ namespace PassthroughCameraSamples.SelectProject
             _ = uiBuilder.AddButton("Add Items to Inventory", () =>
             {
                 Debug.Log("Inventory add confirmed.");
-            }, -1, DebugUIBuilder.DEBUG_PANE_LEFT);
+
+                foreach (var comp in detectedComponents)
+                {
+                    string item = comp["item"];
+                    int qty = comp["quantity"];
+
+                    StaticClass.AddComponentQuantity(item, qty);
+                }
+
+                LoadScene(5);
+           }, -1, DebugUIBuilder.DEBUG_PANE_LEFT);
 
             uiBuilder.Show();
         }

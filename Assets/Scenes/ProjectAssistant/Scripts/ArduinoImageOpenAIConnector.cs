@@ -84,7 +84,7 @@ namespace PassthroughCameraSamples.StartScene
                 "In this image,detect ONLY the following components and count how many of each are clearly visible:\n" +
                 "- arduino\n" +
                 "- breadboard\n" +
-                "- DC_Motor\n" +
+                "- dc_motor\n" +
                 "- diode\n" +
                 "- flex_sensor\n" +
                 "- led\n" +

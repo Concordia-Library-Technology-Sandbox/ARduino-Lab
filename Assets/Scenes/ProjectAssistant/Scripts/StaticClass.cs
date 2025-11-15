@@ -21,4 +21,18 @@ public static class StaticClass
             components = new List<Component>()
         };
     }
+
+    public static void AddComponentQuantity(string item, int quantity)
+    {
+        
+        var component = Components.components.Find(c => c.item == item);
+        if (component != null)
+        {
+            component.quantity += quantity;
+        }
+        else
+        {
+            Components.components.Add(new Component { item = item, quantity = quantity });
+        }
+    }
 }

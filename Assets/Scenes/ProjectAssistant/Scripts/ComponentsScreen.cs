@@ -153,7 +153,7 @@ namespace PassthroughCameraSamples.StartScene
                 {
                     new Component { item = "arduino", quantity = 0 },
                     new Component { item = "breadboard", quantity = 0 },
-                    new Component { item = "DC_Motor", quantity = 0 },
+                    new Component { item = "dc_motor", quantity = 0 },
                     new Component { item = "diode", quantity = 0 },
                     new Component { item = "flex_sensor", quantity = 0 },
                     new Component { item = "led", quantity = 0 },
