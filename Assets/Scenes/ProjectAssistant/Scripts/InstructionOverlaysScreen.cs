@@ -1,97 +1,128 @@
-// Copyright (c)
-// Rewritten to use Newtonsoft.JSON instead of OVRSimpleJSON.
+// Author: Gabriel Armas
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Meta.XR.Samples;
 using PassthroughCameraSamples.StartScene;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
-using System.IO;
 
 namespace PassthroughCameraSamples.SelectProject
 {
+    /// <summary>
+    /// Displays step-by-step instructions returned from OpenAI.
+    /// Handles:
+    /// - Loading animation while waiting for response
+    /// - Step navigation
+    /// - Code snippet expansion/collapsing
+    /// - Clean UI separation across panes
+    /// </summary>
     public class InstructionOverlaysScreen : MonoBehaviour
     {
+        [Header("Dependencies")]
         [SerializeField] private ArduinoImageOpenAIConnector openAIConnector;
         [SerializeField] private RollingAnimationLoader rollingLoader;
 
-
         private DebugUIBuilder uiBuilder;
-        private int instructionIndex = 0;
+
+        // Parsed instructions JSON array
         private JArray instructionsArray;
 
-        // NEW FIELDS FOR CODE PREVIEW
+        // Current step index
+        private int instructionIndex = 0;
+
+        // Code preview controls
         private bool codeExpanded = false;
         private const int CodePreviewLength = 250;
 
+
+        // ----------------------------------------------------------------------
+        // LIFECYCLE
+        // ----------------------------------------------------------------------
+
         private void Start()
         {
-            var passthroughScenes = new List<Tuple<int, string>>();
-            var n = UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings;
-
-            for (var sceneIndex = 1; sceneIndex < n; ++sceneIndex)
-            {
-                var path = UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex(sceneIndex);
-                passthroughScenes.Add(new Tuple<int, string>(sceneIndex, path));
-            }
-
             uiBuilder = DebugUIBuilder.Instance;
 
-            if (passthroughScenes.Count > 0)
-            {
+            // Show loading indicator immediately
+            rollingLoader.LoadRollingAnimation(DebugUIBuilder.DEBUG_PANE_CENTER);
+            _ = uiBuilder.AddLabel("Generating Instructions...", DebugUIBuilder.DEBUG_PANE_CENTER, 33);
 
-                rollingLoader.LoadRollingAnimation(DebugUIBuilder.DEBUG_PANE_CENTER);
+            // Subscribe to JSON callback from OpenAI
+            openAIConnector.onJsonReceived.AddListener(OnInstructionsJsonReceived);
 
-                _ = uiBuilder.AddLabel("Generating Instructions...", DebugUIBuilder.DEBUG_PANE_CENTER, 33);
+            // Build prompt and send request
+            string title = StaticClass.projectTitle;
+            string description = StaticClass.projectDescription;
+            string components = StaticClass.generateCompoundStringOfComponents();
 
-                openAIConnector.onJsonReceived.AddListener(OnInstructionsJsonReceived);
+            openAIConnector.GenerateProjectInstructions(title, description, components);
 
-                string title = StaticClass.projectTitle;
-                string description = StaticClass.projectDescription;
-                string components = StaticClass.generateCompoundStringOfComponents();
-
-                openAIConnector.GenerateProjectInstructions(title, description, components);
-
-                uiBuilder.Show();
-            }
+            uiBuilder.Show();
         }
 
+
+        // ----------------------------------------------------------------------
+        // DEBUG UTILITIES
+        // ----------------------------------------------------------------------
+
+        /// <summary>
+        /// Prints long strings into multiple smaller blocks so Unity Console won’t truncate them.
+        /// </summary>
         private void DebugLong(string tag, string message)
         {
-            int max = 800;
-            for (int i = 0; i < message.Length; i += max)
+            int size = 800;
+            for (int i = 0; i < message.Length; i += size)
             {
-                string chunk = message.Substring(i, Mathf.Min(max, message.Length - i));
+                string chunk = message.Substring(i, Mathf.Min(size, message.Length - i));
                 Debug.Log($"{tag} ({i}): {chunk}");
             }
         }
 
+        /// <summary>
+        /// Saves full JSON to a file for debugging.
+        /// </summary>
         private void SaveJsonToFile(string json)
         {
             try
             {
                 string path = Path.Combine(Application.persistentDataPath, "instructions_debug.json");
                 File.WriteAllText(path, json);
-                Debug.Log("✔ Full JSON saved to: " + path);
+                Debug.Log("✔ Instructions JSON saved: " + path);
             }
             catch (Exception ex)
             {
-                Debug.LogError("Failed to write JSON file: " + ex);
+                Debug.LogError("Failed to save JSON: " + ex.Message);
             }
         }
 
+
+        // ----------------------------------------------------------------------
+        // JSON PARSING
+        // ----------------------------------------------------------------------
+
+        /// <summary>
+        /// Handles JSON returned by OpenAI. Extracts the instruction array.
+        /// </summary>
         private void OnInstructionsJsonReceived(string json)
         {
             try
             {
                 JObject root = JObject.Parse(json);
-                string content = root["choices"][0]["message"]["content"].ToString();
+                string content = root["choices"]?[0]?["message"]?["content"]?.ToString();
+
+                if (string.IsNullOrEmpty(content))
+                {
+                    Debug.LogError("OpenAI content empty or missing.");
+                    return;
+                }
 
                 DebugLong("RAW_CONTENT", content);
 
-                JObject instructionsRoot = JObject.Parse(content);
-                instructionsArray = (JArray)instructionsRoot["instructions"];
+                // Content should already be valid JSON due to strict schema rules
+                JObject parsed = JObject.Parse(content);
+                instructionsArray = (JArray)parsed["instructions"];
 
                 if (instructionsArray == null || instructionsArray.Count == 0)
                 {
@@ -104,76 +135,92 @@ namespace PassthroughCameraSamples.SelectProject
             }
             catch (Exception e)
             {
-                Debug.LogError("ERROR parsing instructions JSON: " + e);
+                Debug.LogError("Error parsing instructions JSON: " + e);
             }
         }
 
+
+        // ----------------------------------------------------------------------
+        // UI RENDERING — MAIN STEP UI
+        // ----------------------------------------------------------------------
+
+        /// <summary>
+        /// Draws the current step: text, optional code snippet, and navigation.
+        /// </summary>
         private void DrawStepUI()
         {
+            // Reset full UI layout for this refresh
             uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_CENTER);
             uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_LEFT);
             uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_RIGHT);
 
             JObject step = (JObject)instructionsArray[instructionIndex];
-            string content = step["text"]?.ToString() ?? "";
+
+            string text = step["text"]?.ToString() ?? "";
+            string code = step["code"]?["snippet"]?.ToString();
             string imagePrompt = step["image_prompt"]?.ToString() ?? "";
 
-            string code = null;
+            // -----------------------------------------------------
+            // CENTER PANE — Step Title & Description
+            // -----------------------------------------------------
 
-            // NOTE: your JSON for "code" changed — update as needed
-            if (step["code"] != null && step["code"].Type != JTokenType.Null)
-            {
-                // NEW FORMAT EXPECTED:
-                //   "code": { "snippet": "..." }
-                code = step["code"]["snippet"]?.ToString();
-            }
+            _ = uiBuilder.AddLabel(
+                $"Step {instructionIndex + 1} of {instructionsArray.Count}",
+                DebugUIBuilder.DEBUG_PANE_CENTER,
+                40
+            );
 
-            _ = uiBuilder.AddLabel($"Step {instructionIndex + 1} of {instructionsArray.Count}", DebugUIBuilder.DEBUG_PANE_CENTER, 40);
             _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_CENTER);
 
-            _ = uiBuilder.AddParagraph(content, DebugUIBuilder.DEBUG_PANE_CENTER, 30);
+            _ = uiBuilder.AddParagraph(text,
+                DebugUIBuilder.DEBUG_PANE_CENTER,
+                30);
 
-            //-----------------------------------
-            //   CODE SNIPPET REGION
-            //-----------------------------------
+
+            // -----------------------------------------------------
+            // RIGHT PANE — Code Snippet (Optional)
+            // -----------------------------------------------------
+
             if (!string.IsNullOrEmpty(code))
             {
-                string displayCode = code;
+                // Expandable code preview
+                string preview = code;
 
                 if (!codeExpanded && code.Length > CodePreviewLength)
-                {
-                    displayCode = code.Substring(0, CodePreviewLength) + "...";
-                }
+                    preview = code.Substring(0, CodePreviewLength) + "...";
 
-                // Expand / Collapse button
+                // Expand/Collapse button
                 string expandLabel = codeExpanded ? "Collapse Code ▲" : "Expand Code ▼";
 
                 _ = uiBuilder.AddButton(expandLabel, () =>
                 {
                     codeExpanded = !codeExpanded;
-                    DrawStepUI();
+                    DrawStepUI(); // refresh UI
                 }, -1, DebugUIBuilder.DEBUG_PANE_CENTER);
 
-                // Show the code in the RIGHT pane
+                // Clear right pane + inject code display
                 uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_RIGHT);
 
                 _ = uiBuilder.AddLabel("Code Snippet", DebugUIBuilder.DEBUG_PANE_RIGHT, 40);
                 _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_RIGHT);
-                _ = uiBuilder.AddParagraph(displayCode, DebugUIBuilder.DEBUG_PANE_RIGHT, 26);
 
-                // Better close button location: BELOW code block
+                _ = uiBuilder.AddParagraph(preview, DebugUIBuilder.DEBUG_PANE_RIGHT, 26);
+
+                // Button to close code panel
                 _ = uiBuilder.AddButton("Close Code", () =>
                 {
                     uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_RIGHT);
                 }, -1, DebugUIBuilder.DEBUG_PANE_RIGHT);
             }
 
-            //-----------------------------------
-            //   NAVIGATION BUTTONS
-            //-----------------------------------
+
+            // -----------------------------------------------------
+            // NAVIGATION BUTTONS
+            // -----------------------------------------------------
 
             _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_CENTER);
 
+            // Previous step
             if (instructionIndex > 0)
             {
                 _ = uiBuilder.AddButton("◀ Previous", () =>
@@ -184,6 +231,7 @@ namespace PassthroughCameraSamples.SelectProject
                 }, -1, DebugUIBuilder.DEBUG_PANE_CENTER);
             }
 
+            // Next step
             if (instructionIndex < instructionsArray.Count - 1)
             {
                 _ = uiBuilder.AddButton("Next ▶", () =>
@@ -197,6 +245,14 @@ namespace PassthroughCameraSamples.SelectProject
             uiBuilder.Show();
         }
 
+
+        // ----------------------------------------------------------------------
+        // SCENE LOADING
+        // ----------------------------------------------------------------------
+
+        /// <summary>
+        /// Helper for scene navigation.
+        /// </summary>
         private void LoadScene(int idx)
         {
             DebugUIBuilder.Instance.Hide();

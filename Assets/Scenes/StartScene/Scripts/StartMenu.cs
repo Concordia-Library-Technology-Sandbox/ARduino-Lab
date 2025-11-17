@@ -1,79 +1,97 @@
-// Copyright (c) Meta Platforms, Inc. and affiliates.
-// Original Source code from Oculus Starter Samples (https://github.com/oculus-samples/Unity-StarterSamples)
+// Copyright (c) Meta Platforms
+// Modified for ARduino Lab by Gabriel Armas
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using Meta.XR.Samples;
 using UnityEngine;
+using Meta.XR.Samples;
 
 namespace PassthroughCameraSamples.StartScene
 {
-    // Create menu of all scenes included in the build.
+    /// <summary>
+    /// Main landing menu for ARduino Lab.
+    /// Displays the app logo, main buttons, and a random friendly tip.
+    /// </summary>
     public class StartMenu : MonoBehaviour
     {
-
         private void Start()
         {
-            var generalScenes = new List<Tuple<int, string>>();
-            var passthroughScenes = new List<Tuple<int, string>>();
-            var proControllerScenes = new List<Tuple<int, string>>();
+            BuildUI();
+        }
 
-            var n = UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings;
-            for (var sceneIndex = 1; sceneIndex < n; ++sceneIndex)
-            {
-                var path = UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex(sceneIndex);
-
-
-                passthroughScenes.Add(new Tuple<int, string>(sceneIndex, path));
-            }
-
+        /// <summary>
+        /// Builds all UI elements using DebugUIBuilder:
+        /// - Logo + headline
+        /// - Start / Tutorial / About buttons
+        /// - Random tip (right panel)
+        /// </summary>
+        private void BuildUI()
+        {
             var uiBuilder = DebugUIBuilder.Instance;
-            if (passthroughScenes.Count > 0)
+
+            // App logo
+            _ = uiBuilder.AddAppLogo(DebugUIBuilder.DEBUG_PANE_CENTER);
+
+            // Subtitle
+            _ = uiBuilder.AddLabel(
+                "Exploring Arduino with Computer Vision, LLMs and Augmented Reality.",
+                DebugUIBuilder.DEBUG_PANE_CENTER,
+                fontSize: 20
+            );
+
+            // Buttons
+            _ = uiBuilder.AddButton("Start", () => LoadScene(1), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+
+            _ = uiBuilder.AddButton("Video Tutorial", () =>
             {
+                Application.OpenURL("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+            }, -1, DebugUIBuilder.DEBUG_PANE_CENTER);
 
-                _ = uiBuilder.AddAppLogo(DebugUIBuilder.DEBUG_PANE_CENTER);
+            _ = uiBuilder.AddButton("About", () => LoadScene(2), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
 
-                _ = uiBuilder.AddLabel("Exploring Arduino with Computer Vision, LLMs and Augmented Reality.", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
+            // Footer signature
+            _ = uiBuilder.AddLabel(
+                "ARduino Lab Beta\nBy Gabriel Armas",
+                DebugUIBuilder.DEBUG_PANE_CENTER,
+                fontSize: 20
+            );
 
-                //Buttons
-                _ = uiBuilder.AddButton("Start", () => LoadScene(1), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
-                _ = uiBuilder.AddButton("Video Tutorial", () => {
-                        Application.OpenURL("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-                }, -1, DebugUIBuilder.DEBUG_PANE_CENTER);
-                //_ = uiBuilder.AddButton("Settings", () => LoadScene(2), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
-                _ = uiBuilder.AddButton("About", () => LoadScene(2), -1, DebugUIBuilder.DEBUG_PANE_CENTER);
-                
-                _ = uiBuilder.AddLabel("ARduino Lab Beta\nBy Gabriel Armas", DebugUIBuilder.DEBUG_PANE_CENTER, 20);
+            // Load a random friendly tip in the RIGHT pane
+            LoadRandomTip(uiBuilder);
 
-            }
-
-
-            //tips
-
-            TextAsset jsonFile = Resources.Load<TextAsset>("tips");
-
-            if (jsonFile != null)
-            {
-                var tipsobj = JsonUtility.FromJson<TipList>(jsonFile.text);
-                System.Random random = new System.Random();
-                int index = random.Next(0, tipsobj.tips.Count);
-                _ = uiBuilder.AddLabel($"Friendly Tip: {tipsobj.tips[index].text}", DebugUIBuilder.DEBUG_PANE_RIGHT, 20);
-            }
-
+            // Display UI
             uiBuilder.Show();
         }
 
-     
+        /// <summary>
+        /// Loads a random tip from Resources/tips.json.
+        /// </summary>
+        private void LoadRandomTip(DebugUIBuilder uiBuilder)
+        {
+            TextAsset jsonFile = Resources.Load<TextAsset>("tips");
+            if (jsonFile == null) return;
 
+            TipList tipsObj = JsonUtility.FromJson<TipList>(jsonFile.text);
+            if (tipsObj == null || tipsObj.tips.Count == 0) return;
+
+            var random = new System.Random();
+            int index = random.Next(tipsObj.tips.Count);
+
+            _ = uiBuilder.AddLabel(
+                $"Friendly Tip: {tipsObj.tips[index].text}",
+                DebugUIBuilder.DEBUG_PANE_RIGHT,
+                fontSize: 20
+            );
+        }
+
+        /// <summary>
+        /// Loads a scene by index. Resets project ID for some scenes.
+        /// </summary>
         private void LoadScene(int idx)
         {
             if (idx == 1 || idx == 3)
-            {
                 StaticClass.projectid = -1;
-            }
+
             DebugUIBuilder.Instance.Hide();
-            Debug.Log("Load scene: " + idx);
             UnityEngine.SceneManagement.SceneManager.LoadScene(idx);
         }
     }
