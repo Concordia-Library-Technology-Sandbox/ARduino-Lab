@@ -103,10 +103,11 @@ namespace PassthroughCameraSamples.SelectProject
                 string title = project["title"];
                 string description = project["description"];
                 JSONArray components = project["components"].AsArray;
+                string titlePreview = title.Length > 27 ? title.Substring(0, 27) + "..." : title;
 
                 // Each project gets a button
                 _ = uiBuilder.AddButton(
-                    $"{i + 1}. {title}",
+                    $"{i + 1}. {titlePreview}",
                     () => LoadSidePanel(title, description, components),
                     -1,
                     DebugUIBuilder.DEBUG_PANE_CENTER
