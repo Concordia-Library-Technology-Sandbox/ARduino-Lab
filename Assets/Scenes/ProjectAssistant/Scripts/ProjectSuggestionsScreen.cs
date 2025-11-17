@@ -141,6 +141,19 @@ namespace PassthroughCameraSamples.SelectProject
 
             _ = uiBuilder.AddButton("Select Project", () =>
             {
+                StaticClass.Reset();
+                StaticClass.projectTitle = currentTitle;
+                StaticClass.projectDescription = currentDescription;
+                
+                for (int i = 0; i < currentComponents.Count; i++)
+                {
+                    string item = currentComponents[i]["item"];
+                    int qty = currentComponents[i]["quantity"];
+
+                    StaticClass.AddComponentQuantity(item, qty);
+                }
+
+
                 LoadScene(9);
             }, -1, DebugUIBuilder.DEBUG_PANE_RIGHT);
 

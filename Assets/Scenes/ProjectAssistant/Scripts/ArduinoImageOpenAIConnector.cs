@@ -237,6 +237,108 @@ namespace PassthroughCameraSamples.StartScene
                 onJsonReceived?.Invoke(raw);
             }
         }
+
+        public void GenerateProjectInstructions(string title, string description, string components)
+        {
+            StartCoroutine(SendInstructionGenerationRequest(title, description, components));
+        }
+
+
+        private IEnumerator SendInstructionGenerationRequest(string title, string description, string components)
+        {
+            string prompt =
+            "You are an Arduino instructor.\n" +
+            "Generate a very clear step-by-step guide for building the project using the information below.\n" +
+            "Each step MUST include:\n" +
+            "1. step: number\n" +
+            "2. text: beginner-friendly instruction\n" +
+            "3. code: null OR a code object (if this step requires Arduino code)\n" +
+            "4. image_prompt: a short, simple sentence describing an image that can visually illustrate this step\n\n" +
+
+            "PROJECT TITLE:\n" + title + "\n\n" +
+            "PROJECT DESCRIPTION:\n" + description + "\n\n" +
+            "AVAILABLE COMPONENTS:\n" + components + "\n\n" +
+
+            "IMPORTANT RULES:\n" +
+            "1. Use ONLY the components listed above.\n" +
+            "2. Wires and resistors are NOT included in the list. They MUST be added automatically when needed.\n" +
+            "   When resistors are required (e.g., for LEDs), instruct the user:\n" +
+            "   'Use an appropriate resistor (typically 220Ω–1kΩ depending on LED specifications).'\n" +
+            "3. The instructions MUST be extremely clear for beginners.\n" +
+            "4. Steps MUST be logical and sequential.\n" +
+            "5. A step MAY need code. If code is needed, include:\n" +
+            "   {\n" +
+            "     \"language\": \"arduino\",\n" +
+            "     \"snippet\": \"<actual code>\"\n" +
+            "   }\n" +
+            "   Otherwise set code to null.\n" +
+            "6. Each step MUST include an image_prompt describing EXACTLY what should be drawn.\n" +
+            "   Image prompt rules:\n" +
+            "   - Keep it short and simple.\n" +
+            "   - No photography terms.\n" +
+            "   - Focus on showing connections (Arduino pins, breadboard, components).\n" +
+            "   - No references to JSON, steps, or the instructions.\n\n" +
+
+            "RETURN STRICT JSON USING THIS EXACT SCHEMA:\n" +
+            "{\n" +
+            "  \"instructions\": [\n" +
+            "    {\n" +
+            "      \"step\": number,\n" +
+            "      \"text\": string,\n" +
+            "      \"code\": { \"language\": string, \"snippet\": string } | null,\n" +
+            "      \"image_prompt\": string\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}\n";
+
+
+
+            // Build request JSON
+            OpenAIRequestHeader request = new OpenAIRequestHeader
+            {
+                model = selectedModel.ToModelString(),
+                max_tokens = 1000,
+                messages = new[]
+                {
+                    new OpenAIMessageShell { role = "user" }
+                }
+            };
+
+            string requestJson = JsonUtility.ToJson(request);
+
+            string contentJson = "\"content\": " + EscapeJSON(prompt);
+
+            string finalJson = requestJson.Replace(
+                "\"role\":\"user\"",
+                "\"role\":\"user\"," + contentJson
+            );
+
+            Debug.Log("OpenAI Instruction Generation Request Payload: " + finalJson);
+
+            // Send request
+            using UnityWebRequest req =
+                new UnityWebRequest("https://api.openai.com/v1/chat/completions", "POST");
+
+            byte[] body = Encoding.UTF8.GetBytes(finalJson);
+            req.uploadHandler = new UploadHandlerRaw(body);
+            req.downloadHandler = new DownloadHandlerBuffer();
+            req.SetRequestHeader("Content-Type", "application/json");
+            req.SetRequestHeader("Authorization", "Bearer " + apiKey);
+
+            yield return req.SendWebRequest();
+
+            if (req.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("OpenAI Error: " + req.downloadHandler.text);
+            }
+            else
+            {
+                string raw = req.downloadHandler.text;
+                Debug.Log("Raw project instruction response: " + raw);
+                onJsonReceived?.Invoke(raw);
+            }
+        }
+
         
         private string EscapeJSON(string s)
         {

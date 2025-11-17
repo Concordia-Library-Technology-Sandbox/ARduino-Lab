@@ -6,16 +6,24 @@ public static class StaticClass
     public static int projectid = -1;
     public static bool RestartInventory = false;
 
+    public static string projectTitle = "";
+
+    public static string projectDescription = "";
+    
     public static ComponentList Components = new ComponentList
 
     
     {
         components = new List<Component>()
     };
+
+
     
     public static void Reset()
     {
         projectid = -1;
+        projectTitle = "";
+        projectDescription = "";
         Components = new ComponentList
         {
             components = new List<Component>()

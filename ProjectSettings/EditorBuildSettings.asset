@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Scenes/SelectProject/SelectProject.unity
     guid: 557fb71a8a2e166dcbb31f4b2daec9b7
   - enabled: 1
-    path: Assets/Scenes/ProjectAssistant/Instructions.unity
+    path: Assets/Scenes/ProjectAssistant/PreInstructions.unity
     guid: 8966aba8411366c66a43cbbb9a3a6511
   - enabled: 1
     path: Assets/Scenes/ProjectAssistant/ComponentsScreen.unity
@@ -32,6 +32,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ProjectAssistant/ProjectSuggestions.unity
     guid: e59396705d15d90e3b8306f4f5755f12
+  - enabled: 1
+    path: Assets/Scenes/ProjectAssistant/InstructionOverlays.unity
+    guid: b042ac8129810a3d8969148202128d1f
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: f2bf97b3acdb64248a707c407c9fc54e, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: a971eac5e950046e586c5e153e32d05c, type: 2}
