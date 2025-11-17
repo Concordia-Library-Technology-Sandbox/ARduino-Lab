@@ -1,8 +1,10 @@
-<img src="Documentation/final_logo.png" alt="ARduino Lab Logo" width="200" height="auto">
-
-# ARduino Lab
-
-A Meta Quest 3 immersive application for Arduino component detection, project ideation, and step-by-step instruction generation using OpenAI Vision API and passthrough camera technology.
+<div align="center">
+  <img src="Documentation/final_logo.png" alt="ARduino Lab Logo" width="200" height="auto">
+  
+  # ARduino Lab
+  
+  A Meta Quest 3 immersive application for Arduino component detection, project ideation, and step-by-step instruction generation using OpenAI Vision API and passthrough camera technology.
+</div>
 
 ## Overview
 
