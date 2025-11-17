@@ -1,3 +1,5 @@
+<img src="Documentation/final_logo.png" alt="ARduino Lab Logo" width="200" height="auto">
+
 # ARduino Lab
 
 A Meta Quest 3 immersive application for Arduino component detection, project ideation, and step-by-step instruction generation using OpenAI Vision API and passthrough camera technology.
@@ -179,7 +181,6 @@ adb logcat | grep Unity
 
 ## Future Enhancements
 - [ ] Local component recognition (edge ML)
-- [ ] 3D model preview of components
 - [ ] Real-time component placement in AR
 - [ ] Project build tracking and validation
 - [ ] Community project sharing
