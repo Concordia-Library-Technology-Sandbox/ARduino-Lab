@@ -22,10 +22,6 @@
         "category": "Main Screen"
       },
       
-      {
-        "text": "Say 'Next step' or 'Previous step' to navigate hands-free.",
-        "category": "Instructions"
-      },
      
       {
         "text": "Always disconnect power before making circuit changes.",
@@ -43,10 +39,21 @@
         "text": "Keep liquids away from your Arduino and electronic components.",
         "category": "Safety"
       },
-      
       {
-        "text": "Customize your settings according to your preferences.",
-        "category": "Settings"
+        "text": "Use a multimeter to check connections if your circuit isn't working as expected.",
+        "category": "Troubleshooting"
+      },
+      {
+        "text": "Double-check your wiring against the schematic if something isn't working.",
+        "category": "Troubleshooting"
+      },
+      {
+        "text": "Restart the app if you encounter detection issues.",
+        "category": "Troubleshooting"
+      },
+      {
+        "text": "Ensure your Arduino IDE is up to date for compatibility.",
+        "category": "Troubleshooting"
       }
     ]
   }
