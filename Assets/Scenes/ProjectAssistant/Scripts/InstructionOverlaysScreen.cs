@@ -14,6 +14,8 @@ namespace PassthroughCameraSamples.SelectProject
     public class InstructionOverlaysScreen : MonoBehaviour
     {
         [SerializeField] private ArduinoImageOpenAIConnector openAIConnector;
+        [SerializeField] private RollingAnimationLoader rollingLoader;
+
 
         private DebugUIBuilder uiBuilder;
         private int instructionIndex = 0;
@@ -38,7 +40,10 @@ namespace PassthroughCameraSamples.SelectProject
 
             if (passthroughScenes.Count > 0)
             {
-                _ = uiBuilder.AddLabel("Generating Project Instructions...", DebugUIBuilder.DEBUG_PANE_CENTER, 50);
+
+                rollingLoader.LoadRollingAnimation(DebugUIBuilder.DEBUG_PANE_CENTER);
+
+                _ = uiBuilder.AddLabel("Generating Instructions...", DebugUIBuilder.DEBUG_PANE_CENTER, 33);
 
                 openAIConnector.onJsonReceived.AddListener(OnInstructionsJsonReceived);
 
@@ -47,12 +52,6 @@ namespace PassthroughCameraSamples.SelectProject
                 string components = StaticClass.generateCompoundStringOfComponents();
 
                 openAIConnector.GenerateProjectInstructions(title, description, components);
-
-                _ = uiBuilder.AddButton("Start", () =>
-                {
-                    StaticClass.RestartInventory = true;
-                    LoadScene(5);
-                }, -1, DebugUIBuilder.DEBUG_PANE_CENTER);
 
                 uiBuilder.Show();
             }

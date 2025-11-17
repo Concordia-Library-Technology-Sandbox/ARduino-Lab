@@ -27,6 +27,9 @@ namespace PassthroughCameraSamples.SelectProject
         private string currentTitle;
         private string currentDescription;
 
+        [SerializeField] private RollingAnimationLoader rollingLoader;
+
+
         private void Start()
         {
             uiBuilder = DebugUIBuilder.Instance;
@@ -40,14 +43,9 @@ namespace PassthroughCameraSamples.SelectProject
             // Initial Loading UI
             uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_CENTER);
 
-            uiBuilder.LoadComponentImage(
-                uiBuilder,
-                "icons/back-btn.png",
-                DebugUIBuilder.DEBUG_PANE_CENTER,
-                () => LoadScene(1)
-            );
+            rollingLoader.LoadRollingAnimation(DebugUIBuilder.DEBUG_PANE_CENTER);
 
-            _ = uiBuilder.AddLabel("Wait, Generating Projects...", DebugUIBuilder.DEBUG_PANE_CENTER, 35);
+            _ = uiBuilder.AddLabel("Generating Projects...", DebugUIBuilder.DEBUG_PANE_CENTER, 40);
 
             uiBuilder.Show();
         }
