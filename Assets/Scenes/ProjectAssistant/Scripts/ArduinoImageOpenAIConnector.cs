@@ -268,8 +268,8 @@ namespace PassthroughCameraSamples.StartScene
             "4. Steps MUST be logical and sequential.\n" +
             "5. A step MAY need code. If code is needed, include:\n" +
             "   {\n" +
-            "     \"language\": \"arduino\",\n" +
-            "     \"snippet\": \"<actual code>\"\n" +
+            "     \\\"language\\\": \\\"arduino\\\",\n" +
+            "     \\\"snippet\\\": \\\"<actual code>\\\"\n" +
             "   }\n" +
             "   Otherwise set code to null.\n" +
             "6. Each step MUST include an image_prompt describing EXACTLY what should be drawn.\n" +
@@ -278,6 +278,14 @@ namespace PassthroughCameraSamples.StartScene
             "   - No photography terms.\n" +
             "   - Focus on showing connections (Arduino pins, breadboard, components).\n" +
             "   - No references to JSON, steps, or the instructions.\n\n" +
+
+            "IMPORTANT JSON VALIDITY RULES:\n" +
+            "- The response MUST NOT contain Markdown code fences (no ```json or ```).\n" +
+            "- JSON keys and string delimiters MUST use double quotes.\n" +
+            "- INSIDE all string values (for 'text', 'snippet', and 'image_prompt'), you MUST use ONLY single quotes 'like this'.\n" +
+            "- NEVER include double quotes inside any string field.\n" +
+            "- If referencing a phrase, write it as: 'Flex Value' instead of \"Flex Value\".\n" +
+            "- The final JSON MUST be valid and parseable without needing post-processing.\n\n" +
 
             "RETURN STRICT JSON USING THIS EXACT SCHEMA:\n" +
             "{\n" +
@@ -297,7 +305,7 @@ namespace PassthroughCameraSamples.StartScene
             OpenAIRequestHeader request = new OpenAIRequestHeader
             {
                 model = selectedModel.ToModelString(),
-                max_tokens = 1000,
+                max_tokens = 15000,
                 messages = new[]
                 {
                     new OpenAIMessageShell { role = "user" }
