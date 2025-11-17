@@ -1,67 +1,218 @@
-// Copyright (c) Meta Platforms, Inc. and affiliates.
-// Original Source code from Oculus Starter Samples (https://github.com/oculus-samples/Unity-StarterSamples)
+// Copyright (c) Meta Platforms
+// Modified for ARduino Lab
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Meta.XR.Samples;
-using PassthroughCameraSamples.StartScene; 
+using PassthroughCameraSamples.StartScene;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using OVRSimpleJSON;
 
 namespace PassthroughCameraSamples.SelectProject
-
 {
-    // Create menu of all scenes included in the build.
     public class ProjectSuggestionsScreen : MonoBehaviour
     {
-
         [SerializeField] private ArduinoImageOpenAIConnector openAIConnector;
+
+        private DebugUIBuilder uiBuilder;
+
+        // Project list (center panel)
+        private List<JSONNode> projectList = new List<JSONNode>();
+
+        // Component pagination (RIGHT PANEL ONLY)
+        private int componentPage = 0;
+        private const int componentPageSize = 3;
+        private JSONArray currentComponents;
+        private string currentTitle;
+        private string currentDescription;
+
         private void Start()
         {
-            var generalScenes = new List<Tuple<int, string>>();
-            var passthroughScenes = new List<Tuple<int, string>>();
-            var proControllerScenes = new List<Tuple<int, string>>();
+            uiBuilder = DebugUIBuilder.Instance;
 
-            var n = UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings;
-            for (var sceneIndex = 1; sceneIndex < n; ++sceneIndex)
+            // Listener BEFORE generating
+            openAIConnector.onJsonReceived.AddListener(OnProjectsJsonReceived);
+
+            // Request project ideas from OpenAI
+            openAIConnector.GenerateProjects(StaticClass.generateCompoundStringOfComponents());
+
+            // Initial Loading UI
+            uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_CENTER);
+
+            uiBuilder.LoadComponentImage(
+                uiBuilder,
+                "icons/back-btn.png",
+                DebugUIBuilder.DEBUG_PANE_CENTER,
+                () => LoadScene(1)
+            );
+
+            _ = uiBuilder.AddLabel("Wait, Generating Projects...", DebugUIBuilder.DEBUG_PANE_CENTER, 35);
+
+            uiBuilder.Show();
+        }
+
+        private void OnProjectsJsonReceived(string json)
+        {
+            Debug.Log("Received project suggestions JSON: " + json);
+
+            try
             {
-                var path = UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex(sceneIndex);
-                passthroughScenes.Add(new Tuple<int, string>(sceneIndex, path));
+                JSONNode root = JSON.Parse(json);
+                string rawContent = root["choices"][0]["message"]["content"];
+
+                string cleaned = rawContent
+                                .Replace("```json", "")
+                                .Replace("```", "")
+                                .Trim();
+
+                JSONNode result = JSON.Parse(cleaned);
+                JSONArray projects = result["projects"].AsArray;
+
+                projectList.Clear();
+                foreach (var p in projects)
+                    projectList.Add(p.Value);
+
+                ShowProjectButtons();
             }
-
-            var uiBuilder = DebugUIBuilder.Instance;
-            if (passthroughScenes.Count > 0)
+            catch (Exception e)
             {
-                openAIConnector.generateProjects(StaticClass.generateCompoundStringOfComponents());
-
-                uiBuilder.LoadComponentImage(uiBuilder, "icons/back-btn.png", DebugUIBuilder.DEBUG_PANE_CENTER, () =>
-                                {
-                                    LoadScene(1);
-                                });
-
-                _ = uiBuilder.AddLabel("Project Suggestions", DebugUIBuilder.DEBUG_PANE_CENTER, 50);
-
-                _ = uiBuilder.AddParagraph(
-                    "Based on your current components, here are some project suggestions:\n\n" +
-                    "1. Blink an LED: Use an LED, resistor, and Arduino to create a simple blinking light.\n" +
-                    "2. Temperature Monitor: Combine a temperature sensor with the Arduino to display real-time temperature readings.\n" +
-                    "3. Servo Motor Control: Use a servo motor and potentiometer to control the position of the motor shaft.\n\n" +
-                    "Select a project to see AR instructions on how to build it!",
-                    DebugUIBuilder.DEBUG_PANE_CENTER, 23);                
-                
-                uiBuilder.Show();
+                Debug.LogError("Error parsing project suggestions JSON: " + e.Message);
             }
         }
 
+        // ==============================
+        //   PROJECT BUTTONS (NO PAGING)
+        // ==============================
+        private void ShowProjectButtons()
+        {
+            uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_CENTER);
 
-        private void LoadScene(int idx)
+            // Back button
+            uiBuilder.LoadComponentImage(
+                uiBuilder,
+                "icons/back-btn.png",
+                DebugUIBuilder.DEBUG_PANE_CENTER,
+                () => LoadScene(1)
+            );
+
+            _ = uiBuilder.AddLabel("Project Suggestions", DebugUIBuilder.DEBUG_PANE_CENTER, 48);
+
+            for (int i = 0; i < projectList.Count; i++)
+            {
+                var project = projectList[i];
+
+                string title = project["title"];
+                string description = project["description"];
+                JSONArray components = project["components"].AsArray;
+
+                // Each project gets a button
+                _ = uiBuilder.AddButton(
+                    $"{i + 1}. {title}",
+                    () => LoadSidePanel(title, description, components),
+                    -1,
+                    DebugUIBuilder.DEBUG_PANE_CENTER
+                );
+
+                _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_CENTER);
+            }
+
+            uiBuilder.Show();
+        }
+
+   
+        private void LoadSidePanel(string title, string description, JSONArray components)
+        {
+            currentTitle = title;
+            currentDescription = description;
+            currentComponents = components;
+            componentPage = 0;
+
+            ShowComponentPage();
+        }
+
+        private void ShowComponentPage()
+        {
+            uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_RIGHT);
+
+            // Title + description
+            _ = uiBuilder.AddParagraph(currentTitle, DebugUIBuilder.DEBUG_PANE_RIGHT, 40);
+            _ = uiBuilder.AddParagraph(currentDescription, DebugUIBuilder.DEBUG_PANE_RIGHT, 20);
+
+            _ = uiBuilder.AddButton("Select Project", () =>
+            {
+                LoadScene(9);
+            }, -1, DebugUIBuilder.DEBUG_PANE_RIGHT);
+
+            _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_RIGHT);
+
+            // Pagination math
+            int total = currentComponents.Count;
+            int totalPages = Mathf.CeilToInt(total / (float)componentPageSize);
+
+            int start = componentPage * componentPageSize;
+            int end = Mathf.Min(start + componentPageSize, total);
+
+            if (total > componentPageSize)
+            {
+                _ = uiBuilder.AddLabel(
+                    $"Page {componentPage + 1} / {totalPages}",
+                    DebugUIBuilder.DEBUG_PANE_RIGHT,
+                    30
+                );
+
+                _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_RIGHT);
+            }
+
+            // COMPONENTS FOR THIS PAGE
+            for (int i = start; i < end; i++)
+            {
+                JSONNode comp = currentComponents[i];
+                string item = comp["item"];
+                int qty = comp["quantity"];
+
+                uiBuilder.LoadComponentImage(
+                    uiBuilder,
+                    $"2dmod/{item}.jpg",
+                    DebugUIBuilder.DEBUG_PANE_RIGHT,
+                    () => {}
+                );
+
+                _ = uiBuilder.AddLabel(
+                    $"{item} (x{qty})",
+                    DebugUIBuilder.DEBUG_PANE_RIGHT,
+                    22
+                );
+
+                _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_RIGHT);
+            }
+
+            // PAGINATION BUTTONS
+            if (componentPage > 0)
+            {
+                _ = uiBuilder.AddButton("← Previous Page", () =>
+                {
+                    componentPage--;
+                    ShowComponentPage();
+                }, -1, DebugUIBuilder.DEBUG_PANE_RIGHT);
+            }
+
+            if ((componentPage + 1) * componentPageSize < total)
+            {
+                _ = uiBuilder.AddButton("Next Page →", () =>
+                {
+                    componentPage++;
+                    ShowComponentPage();
+                }, -1, DebugUIBuilder.DEBUG_PANE_RIGHT);
+            }
+
+            uiBuilder.Show();
+        }
+
+          private void LoadScene(int idx)
         {
             DebugUIBuilder.Instance.Hide();
-            Debug.Log("Load scene: " + idx);
-            UnityEngine.SceneManagement.SceneManager.LoadScene(idx);
+            SceneManager.LoadScene(idx);
         }
     }
-    
 }
-
-

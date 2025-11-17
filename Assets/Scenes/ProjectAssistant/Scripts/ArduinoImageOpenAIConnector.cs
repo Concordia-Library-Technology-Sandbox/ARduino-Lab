@@ -161,7 +161,7 @@ namespace PassthroughCameraSamples.StartScene
         }
 
 
-        public void generateProjects(string componentsCompoundString)
+        public void GenerateProjects(string componentsCompoundString)
         {
             StartCoroutine(SendProjectGenerationRequest(componentsCompoundString));
         }
