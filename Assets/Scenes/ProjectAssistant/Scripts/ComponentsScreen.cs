@@ -22,6 +22,9 @@ namespace PassthroughCameraSamples.StartScene
         [SerializeField] private ArduinoImageOpenAIConnector openAIConnector;
         [SerializeField] private WebCamTextureManager webCamManager;
 
+        [SerializeField] private StarsAnimationLoader starsAnimationLoader;
+
+
         private DebugUIBuilder uiBuilder;
 
         // Inventory model
@@ -260,6 +263,8 @@ namespace PassthroughCameraSamples.StartScene
 
             if (nonZeroComponents.Count >= 3)
             {
+                starsAnimationLoader.LoadStarsAnimation(DebugUIBuilder.DEBUG_PANE_RIGHT);
+
                 _ = uiBuilder.AddButton(
                     "Suggest Projects",
                     () => LoadScene(8),

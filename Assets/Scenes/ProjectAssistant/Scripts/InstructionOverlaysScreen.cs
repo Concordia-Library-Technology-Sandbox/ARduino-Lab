@@ -48,8 +48,8 @@ namespace PassthroughCameraSamples.SelectProject
             uiBuilder = DebugUIBuilder.Instance;
 
             // Show loading indicator immediately
-            rollingLoader.LoadRollingAnimation(DebugUIBuilder.DEBUG_PANE_CENTER);
-            _ = uiBuilder.AddLabel("Generating Instructions...", DebugUIBuilder.DEBUG_PANE_CENTER, 33);
+            rollingLoader.LoadRollingAnimation(DebugUIBuilder.DEBUG_PANE_LEFT);
+            _ = uiBuilder.AddLabel("Generating Instructions...", DebugUIBuilder.DEBUG_PANE_LEFT, 33);
 
             // Subscribe to JSON callback from OpenAI
             openAIConnector.onJsonReceived.AddListener(OnInstructionsJsonReceived);
@@ -149,9 +149,9 @@ namespace PassthroughCameraSamples.SelectProject
         private void DrawStepUI()
         {
             // Reset full UI layout for this refresh
-            uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_CENTER);
             uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_LEFT);
-            uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_RIGHT);
+            uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_LEFT);
+            uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_CENTER);
 
             JObject step = (JObject)instructionsArray[instructionIndex];
 
@@ -168,14 +168,14 @@ namespace PassthroughCameraSamples.SelectProject
 
             _ = uiBuilder.AddLabel(
                 $"Step {instructionIndex + 1} of {instructionsArray.Count}",
-                DebugUIBuilder.DEBUG_PANE_CENTER,
+                DebugUIBuilder.DEBUG_PANE_LEFT,
                 40
             );
 
-            _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_CENTER);
+            _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
 
             _ = uiBuilder.AddParagraph(text,
-                DebugUIBuilder.DEBUG_PANE_CENTER,
+                DebugUIBuilder.DEBUG_PANE_LEFT,
                 30);
             
 
@@ -184,12 +184,12 @@ namespace PassthroughCameraSamples.SelectProject
             if(tex != null)
             {
                     Sprite stepSprite = TextureToSprite(tex);
-                    uiBuilder.AddImage(stepSprite, DebugUIBuilder.DEBUG_PANE_CENTER, 450);
+                    uiBuilder.AddImage(stepSprite, DebugUIBuilder.DEBUG_PANE_LEFT, 450);
             }
             else
             {
-                rollingLoader.LoadRollingAnimation(DebugUIBuilder.DEBUG_PANE_CENTER);
-                _ = uiBuilder.AddLabel("Generating Illustration...", DebugUIBuilder.DEBUG_PANE_CENTER, 25);
+                rollingLoader.LoadRollingAnimation(DebugUIBuilder.DEBUG_PANE_LEFT);
+                _ = uiBuilder.AddLabel("Generating Illustration...", DebugUIBuilder.DEBUG_PANE_LEFT, 25);
                 GenerateDescriptionImage(imagePrompt, instructionIndex);
             }
 
@@ -213,21 +213,21 @@ namespace PassthroughCameraSamples.SelectProject
                 {
                     codeExpanded = !codeExpanded;
                     DrawStepUI(); // refresh UI
-                }, -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+                }, -1, DebugUIBuilder.DEBUG_PANE_LEFT);
 
                 // Clear right pane + inject code display
-                uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_RIGHT);
+                uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_CENTER);
 
-                _ = uiBuilder.AddLabel("Code Snippet", DebugUIBuilder.DEBUG_PANE_RIGHT, 40);
-                _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_RIGHT);
+                _ = uiBuilder.AddLabel("Code Snippet", DebugUIBuilder.DEBUG_PANE_CENTER, 40);
+                _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_CENTER);
 
-                _ = uiBuilder.AddParagraph(preview, DebugUIBuilder.DEBUG_PANE_RIGHT, 26);
+                _ = uiBuilder.AddParagraph(preview, DebugUIBuilder.DEBUG_PANE_CENTER, 26);
 
                 // Button to close code panel
                 _ = uiBuilder.AddButton("Close Code", () =>
                 {
-                    uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_RIGHT);
-                }, -1, DebugUIBuilder.DEBUG_PANE_RIGHT);
+                    uiBuilder.Clear(DebugUIBuilder.DEBUG_PANE_CENTER);
+                }, -1, DebugUIBuilder.DEBUG_PANE_CENTER);
             }
 
 
@@ -235,7 +235,7 @@ namespace PassthroughCameraSamples.SelectProject
             // NAVIGATION BUTTONS
             // -----------------------------------------------------
 
-            _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_CENTER);
+            _ = uiBuilder.AddDivider(DebugUIBuilder.DEBUG_PANE_LEFT);
 
             // Previous step
             if (instructionIndex > 0)
@@ -245,7 +245,7 @@ namespace PassthroughCameraSamples.SelectProject
                     codeExpanded = false;
                     instructionIndex--;
                     DrawStepUI();
-                }, -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+                }, -1, DebugUIBuilder.DEBUG_PANE_LEFT);
             }
 
             // Next step
@@ -256,7 +256,7 @@ namespace PassthroughCameraSamples.SelectProject
                     codeExpanded = false;
                     instructionIndex++;
                     DrawStepUI();
-                }, -1, DebugUIBuilder.DEBUG_PANE_CENTER);
+                }, -1, DebugUIBuilder.DEBUG_PANE_LEFT);
             }
 
             uiBuilder.Show();
