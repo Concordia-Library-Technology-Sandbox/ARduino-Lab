@@ -14,7 +14,15 @@
 - **Create step-by-step instructions** for building Arduino projects
 - **Manage an inventory** of components in an intuitive 3D interface
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/k6I-jv2zeHo?si=Ki6gp6XlKtieGXC7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+## 🎬 Demo Video
+
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=k6I-jv2zeHo">
+    <img src="Documentation/video-preview.png" alt="ARduino Lab Demo Video" width="500" height="auto" style="border-radius: 8px;">
+  </a>
+  
+  **Click above to watch the full demo on YouTube**
+</div>
 
 ## Features
 
