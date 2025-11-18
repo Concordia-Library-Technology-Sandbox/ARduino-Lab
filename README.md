@@ -26,6 +26,8 @@
 - Automatic component identification from images
 - JSON-structured response parsing
 - Project suggestion engine based on available components
+- Image generation for instruction step illustrations using OpenAI image model `gpt-image-1-mini`
+- Instruction and project text generation using `gpt-4.1-mini`
 
 ### 📦 Inventory Management
 - Persistent component storage
