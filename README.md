@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="Documentation/final_logo.png" alt="ARduino Lab Logo" width="250" height="auto">
+  <img src="Documentation/final_logo.png" alt="ARduino Lab Logo" width="230" height="auto">
   
   # ARduino Lab
   
