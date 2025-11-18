@@ -14,6 +14,8 @@
 - **Create step-by-step instructions** for building Arduino projects
 - **Manage an inventory** of components in an intuitive 3D interface
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/k6I-jv2zeHo?si=Ki6gp6XlKtieGXC7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Features
 
 ### 🎥 Camera Integration
