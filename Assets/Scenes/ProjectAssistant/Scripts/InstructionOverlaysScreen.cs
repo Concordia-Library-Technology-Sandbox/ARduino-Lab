@@ -36,6 +36,8 @@ namespace PassthroughCameraSamples.SelectProject
         private bool codeExpanded = false;
         private const int CodePreviewLength = 250;
 
+        private Texture2D[] textures = null;
+
 
         // ----------------------------------------------------------------------
         // LIFECYCLE
@@ -64,41 +66,6 @@ namespace PassthroughCameraSamples.SelectProject
 
 
         // ----------------------------------------------------------------------
-        // DEBUG UTILITIES
-        // ----------------------------------------------------------------------
-
-        /// <summary>
-        /// Prints long strings into multiple smaller blocks so Unity Console won’t truncate them.
-        /// </summary>
-        private void DebugLong(string tag, string message)
-        {
-            int size = 800;
-            for (int i = 0; i < message.Length; i += size)
-            {
-                string chunk = message.Substring(i, Mathf.Min(size, message.Length - i));
-                Debug.Log($"{tag} ({i}): {chunk}");
-            }
-        }
-
-        /// <summary>
-        /// Saves full JSON to a file for debugging.
-        /// </summary>
-        private void SaveJsonToFile(string json)
-        {
-            try
-            {
-                string path = Path.Combine(Application.persistentDataPath, "instructions_debug.json");
-                File.WriteAllText(path, json);
-                Debug.Log("✔ Instructions JSON saved: " + path);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError("Failed to save JSON: " + ex.Message);
-            }
-        }
-
-
-        // ----------------------------------------------------------------------
         // JSON PARSING
         // ----------------------------------------------------------------------
 
@@ -109,6 +76,8 @@ namespace PassthroughCameraSamples.SelectProject
         {
             try
             {
+
+                SaveJsonToFile(json);
                 JObject root = JObject.Parse(json);
                 string content = root["choices"]?[0]?["message"]?["content"]?.ToString();
 
@@ -118,8 +87,22 @@ namespace PassthroughCameraSamples.SelectProject
                     return;
                 }
 
-                DebugLong("RAW_CONTENT", content);
-
+                content = content.Trim();
+                if (content.StartsWith("```json"))
+                {
+                    content = content.Substring(7); // Remove ```json
+                }
+                else if (content.StartsWith("```"))
+                {
+                    content = content.Substring(3); // Remove ```
+                }
+                
+                if (content.EndsWith("```"))
+                {
+                    content = content.Substring(0, content.Length - 3); // Remove trailing ```
+                }
+                
+                content = content.Trim(); //
                 // Content should already be valid JSON due to strict schema rules
                 JObject parsed = JObject.Parse(content);
                 instructionsArray = (JArray)parsed["instructions"];
@@ -131,6 +114,12 @@ namespace PassthroughCameraSamples.SelectProject
                 }
 
                 instructionIndex = 0;
+
+                // Initialize textures array
+                textures = new Texture2D[instructionsArray.Count];
+
+
+
                 DrawStepUI();
             }
             catch (Exception e)
@@ -143,6 +132,16 @@ namespace PassthroughCameraSamples.SelectProject
         // ----------------------------------------------------------------------
         // UI RENDERING — MAIN STEP UI
         // ----------------------------------------------------------------------
+
+        private Sprite TextureToSprite(Texture2D tex)
+        {
+            return Sprite.Create(
+                tex,
+                new Rect(0, 0, tex.width, tex.height),
+                new Vector2(0.5f, 0.5f),
+                100f   // pixels per unit
+            );
+        }
 
         /// <summary>
         /// Draws the current step: text, optional code snippet, and navigation.
@@ -157,7 +156,10 @@ namespace PassthroughCameraSamples.SelectProject
             JObject step = (JObject)instructionsArray[instructionIndex];
 
             string text = step["text"]?.ToString() ?? "";
-            string code = step["code"]?["snippet"]?.ToString();
+            JToken codeToken = step["code"];
+            string code = (codeToken != null && codeToken.Type != JTokenType.Null) 
+                ? codeToken["snippet"]?.ToString() 
+                : null;
             string imagePrompt = step["image_prompt"]?.ToString() ?? "";
 
             // -----------------------------------------------------
@@ -175,6 +177,21 @@ namespace PassthroughCameraSamples.SelectProject
             _ = uiBuilder.AddParagraph(text,
                 DebugUIBuilder.DEBUG_PANE_CENTER,
                 30);
+            
+
+            Texture2D tex = textures[instructionIndex];
+
+            if(tex != null)
+            {
+                    Sprite stepSprite = TextureToSprite(tex);
+                    uiBuilder.AddImage(stepSprite, DebugUIBuilder.DEBUG_PANE_CENTER, 450);
+            }
+            else
+            {
+                rollingLoader.LoadRollingAnimation(DebugUIBuilder.DEBUG_PANE_CENTER);
+                _ = uiBuilder.AddLabel("Generating Illustration...", DebugUIBuilder.DEBUG_PANE_CENTER, 25);
+                GenerateDescriptionImage(imagePrompt, instructionIndex);
+            }
 
 
             // -----------------------------------------------------
@@ -245,6 +262,28 @@ namespace PassthroughCameraSamples.SelectProject
             uiBuilder.Show();
         }
 
+        private void GenerateDescriptionImage(string prompt, int index)
+        {
+            StartCoroutine(openAIConnector.SendImageGenerationRequest(prompt, (Texture2D tex) =>
+            {
+                if (tex == null)
+                {
+                    Debug.LogError("Image generation failed for step " + index);
+                    return;
+                }
+
+                // Store texture for this step
+                textures[index] = tex;
+
+                Debug.Log("Image generated for step " + index + " — size: " + tex.width + "x" + tex.height);
+
+                // refresh UI if this is the currently visible step
+                if (instructionIndex == index)
+                    DrawStepUI();
+            }));
+        }
+
+
 
         // ----------------------------------------------------------------------
         // SCENE LOADING
@@ -257,6 +296,40 @@ namespace PassthroughCameraSamples.SelectProject
         {
             DebugUIBuilder.Instance.Hide();
             UnityEngine.SceneManagement.SceneManager.LoadScene(idx);
+        }
+
+         // ----------------------------------------------------------------------
+        // DEBUG UTILITIES
+        // ----------------------------------------------------------------------
+
+        /// <summary>
+        /// Prints long strings into multiple smaller blocks so Unity Console won’t truncate them.
+        /// </summary>
+        private void DebugLong(string tag, string message)
+        {
+            int size = 800;
+            for (int i = 0; i < message.Length; i += size)
+            {
+                string chunk = message.Substring(i, Mathf.Min(size, message.Length - i));
+                Debug.Log($"{tag} ({i}): {chunk}");
+            }
+        }
+
+        /// <summary>
+        /// Saves full JSON to a file for debugging.
+        /// </summary>
+        private void SaveJsonToFile(string json)
+        {
+            try
+            {
+                string path = Path.Combine(Application.persistentDataPath, "instructions_debug.json");
+                File.WriteAllText(path, json);
+                Debug.Log("✔ Instructions JSON saved: " + path);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Failed to save JSON: " + ex.Message);
+            }
         }
     }
 }

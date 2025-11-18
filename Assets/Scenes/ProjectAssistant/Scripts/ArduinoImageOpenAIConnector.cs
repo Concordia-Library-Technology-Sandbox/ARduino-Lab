@@ -284,8 +284,55 @@ namespace PassthroughCameraSamples.StartScene
         private IEnumerator SendInstructionGenerationRequest(string title, string description, string components)
         {
             // (Large prompt preserved exactly)
-            string prompt = BuildInstructionsPrompt(title, description, components);
 
+            string prompt = "You are an Arduino instructor.\n" +
+            "Generate a very clear step-by-step guide for building the project using the information below.\n" +
+            "Each step MUST include:\n" +
+            "1. step: number\n" +
+            "2. text: beginner-friendly instruction\n" +
+            "3. code: null OR a code object (if this step requires Arduino code)\n" +
+            "4. image_prompt: a short, simple sentence describing an image that can visually illustrate this step\n\n" +
+            "PROJECT TITLE:\n" + title + "\n\n" +
+            "PROJECT DESCRIPTION:\n" + description + "\n\n" +
+            "AVAILABLE COMPONENTS:\n" + components + "\n\n" +
+            "IMPORTANT RULES:\n" +
+            "1. Use ONLY the components listed above.\n" +
+            "2. Wires and resistors are NOT included in the list. They MUST be added automatically when needed.\n" +
+            "   When resistors are required (e.g., for LEDs), instruct the user:\n" +
+            "   'Use an appropriate resistor (typically 220Ω–1kΩ depending on LED specifications).'\n" +
+            "3. The instructions MUST be extremely clear for beginners.\n" +
+            "4. Steps MUST be logical and sequential.\n" +
+            "5. A step MAY need code. If code is needed, include:\n" +
+            "   {\n" +
+            "     \"language\": \"arduino\",\n" +
+            "     \"snippet\": \"<actual code>\"\n" +
+            "   }\n" +
+            "   Otherwise set code to null.\n" +
+            "6. Each step MUST include an image_prompt describing EXACTLY what should be drawn.\n" +
+            "   Image prompt rules:\n" +
+            "   - Keep it short and simple.\n" +
+            "   - No photography terms.\n" +
+            "   - Focus on showing connections (Arduino pins, breadboard, components).\n" +
+            "   - No references to JSON, steps, or the instructions.\n\n" +
+            "IMPORTANT JSON VALIDITY RULES:\n" +
+            "- JSON must be 100% valid and parseable.\n" +
+            "- All JSON keys must use double quotes.\n" +
+            "- All JSON string values must use double quotes.\n" +
+            "- Inside code snippets, escape internal double quotes with \".\n" +
+            "- All newlines must be escaped as \\n.\n" +
+            "- DO NOT use single quotes for strings in code.\n\n" +
+            "RETURN STRICT JSON USING THIS EXACT SCHEMA:\n" +
+            "{\n" +
+            "  \"instructions\": [\n" +
+            "    {\n" +
+            "      \"step\": number,\n" +
+            "      \"text\": string,\n" +
+            "      \"code\": { \"language\": string, \"snippet\": string } | null,\n" +
+            "      \"image_prompt\": string\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}\n";
+            
             OpenAIRequestHeader request = new OpenAIRequestHeader
             {
                 model = selectedModel.ToModelString(),
@@ -323,27 +370,85 @@ namespace PassthroughCameraSamples.StartScene
             }
         }
 
+        public IEnumerator SendImageGenerationRequest(string prompt, Action<Texture2D> onImageReady = null)
+        {
+            // ----------------------------
+            // 1. Build payload
+            // ----------------------------
+           
+
+            var payload = new
+            {
+                model = "gpt-image-1-mini",
+                prompt = prompt,  // No escaping needed!
+                size = "1024x1024",
+            };
+
+            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
+
+            Debug.Log("Image Payload: " + jsonPayload);
+
+            // ----------------------------
+            // 2. UnityWebRequest
+            // ----------------------------
+            using UnityWebRequest req =
+                new UnityWebRequest("https://api.openai.com/v1/images/generations", "POST");
+
+            req.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(jsonPayload));
+            req.downloadHandler = new DownloadHandlerBuffer();
+            req.SetRequestHeader("Content-Type", "application/json");
+            req.SetRequestHeader("Authorization", "Bearer " + apiKey);
+
+            yield return req.SendWebRequest();
+
+            if (req.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Image Generation Error: " + req.error);
+                Debug.LogError(req.downloadHandler.text);
+                yield break;
+            }
+
+            // ----------------------------
+            // 3. Read JSON and extract base64
+            // ----------------------------
+            string raw = req.downloadHandler.text;
+            Debug.Log("Image Gen Response: " + raw);
+
+            // Example response:
+            // { "data": [ { "b64_json": "iVBOR..." } ] }
+
+            string base64 = null;
+            try
+            {
+                var root = Newtonsoft.Json.Linq.JObject.Parse(raw);
+                base64 = root["data"][0]["b64_json"].ToString();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Could not parse image JSON: " + ex.Message);
+                yield break;
+            }
+
+            // ----------------------------
+            // 4. Convert to Texture2D
+            // ----------------------------
+            byte[] bytes = Convert.FromBase64String(base64);
+
+            Texture2D tex = new Texture2D(2, 2);
+            tex.LoadImage(bytes);
+
+            Debug.Log("Image decoded successfully!");
+
+            // Return through callback
+            onImageReady?.Invoke(tex);
+        }
+
+
 
         // ---------------------------------------------------------------------
         // HELPER FUNCTIONS
         // ---------------------------------------------------------------------
 
-        /// <summary>
-        /// Builds the large instruction-generation prompt.
-        /// Extracted to keep code clean and readable.
-        /// </summary>
-        private string BuildInstructionsPrompt(string title, string description, string components)
-        {
-            return
-                "You are an Arduino instructor.\n" +
-                "Generate a step-by-step beginner-friendly guide.\n\n" +
-
-                "PROJECT TITLE:\n" + title + "\n\n" +
-                "PROJECT DESCRIPTION:\n" + description + "\n\n" +
-                "AVAILABLE COMPONENTS:\n" + components + "\n\n" +
-
-                "... (your full prompt remains unchanged) ...\n";
-        }
 
         /// <summary>
         /// Escapes text for safe injection into raw JSON fields.
