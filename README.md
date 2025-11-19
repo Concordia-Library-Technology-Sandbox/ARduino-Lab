@@ -65,7 +65,8 @@ Assets/
 ├── Resources/
 │   ├── secrets/              # API keys (git-ignored)
 │   ├── icons/                # UI icons and buttons
-│   ├── rolling/              # Loading animation frames (30 sprites)
+│   ├── rolling/              # Loading animation frames
+│   ├── ai-start/             # Stars animation
 │   ├── projects.json         # Project database
 │   ├── tips.json             # Tips and hints
 │   └── 2dmod/, 3dmod/        # 3D models for components
@@ -136,10 +137,6 @@ Assets/
    - **Component Inventory** → View and manage components
    - **Project Suggestions** → Get AI-generated project ideas
 
-### Camera Zone Selection
-1. Tap "Define Zone" in the Components Screen
-2. Drag to select the area containing Arduino components
-3. Tap "Scan Using Camera" to analyze only the selected region
 
 ## API Integration
 
