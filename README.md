@@ -66,7 +66,7 @@ Assets/
 │   ├── secrets/              # API keys (git-ignored)
 │   ├── icons/                # UI icons and buttons
 │   ├── rolling/              # Loading animation frames
-│   ├── ai-start/             # Stars animation
+│   ├── ai-stars/             # Stars animation
 │   ├── projects.json         # Project database
 │   ├── tips.json             # Tips and hints
 │   └── 2dmod/, 3dmod/        # 3D models for components
