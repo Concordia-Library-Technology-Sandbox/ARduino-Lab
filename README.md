@@ -3,8 +3,7 @@
   
   # ARduino Lab
   
-  A Meta Quest 3 immersive application for Arduino component detection, project ideation, and step-by-step instruction generation using OpenAI Vision API and passthrough camera technology.
-</div>
+  An immersive Meta Quest 3 application for Arduino component detection, project ideation, and step-by-step instruction generation using LLMs, computer vision, and AR.
 
 ## Overview
 
