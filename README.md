@@ -5,6 +5,8 @@
   
   An immersive Meta Quest 3 application for Arduino component detection, project ideation, and step-by-step instruction generation using LLMs, computer vision, and AR.
 
+</div>
+
 ## Overview
 
 **ARduino Lab** combines augmented reality with artificial intelligence to help users:
@@ -13,7 +15,6 @@
 - **Create step-by-step instructions** for building Arduino projects
 - **Manage an inventory** of components in an intuitive 3D interface
 
-</div>
 ## Demo Video
 
 <div align="center">
