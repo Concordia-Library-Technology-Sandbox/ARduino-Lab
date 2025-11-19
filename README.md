@@ -13,6 +13,7 @@
 - **Create step-by-step instructions** for building Arduino projects
 - **Manage an inventory** of components in an intuitive 3D interface
 
+</div>
 ## Demo Video
 
 <div align="center">
